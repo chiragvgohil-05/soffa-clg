@@ -1,0 +1,130 @@
+/* Banner.css */
+
+.banner {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Layout styles */
+.banner.left {
+    flex-direction: row;
+}
+
+.banner.right {
+    flex-direction: row-reverse;
+}
+
+/* Image container styles */
+.banner-image-container {
+    flex: 1;
+    min-height: 300px;
+    position: relative;
+}
+
+.banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* Content styles */
+.banner-content {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.banner-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.banner-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.banner-description {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.banner-cta {
+    display: inline-block;
+    padding: 12px 30px;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+}
+
+.banner-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .banner-title {
+        font-size: 2rem;
+    }
+
+    .banner-content {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner {
+        flex-direction: column !important;
+    }
+
+    .banner-image-container {
+        flex: none;
+        height: 300px;
+    }
+
+    .banner-content {
+        padding: 30px 20px;
+    }
+
+    .banner-title {
+        font-size: 1.8rem;
+    }
+
+    .banner-cta {
+        align-self: center;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .banner-title {
+        font-size: 1.5rem;
+    }
+
+    .banner-subtitle {
+        font-size: 1rem;
+    }
+
+    .banner-description {
+        font-size: 1rem;
+    }
+}
