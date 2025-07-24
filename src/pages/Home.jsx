@@ -1,9 +1,18 @@
 import React from 'react'
 import BannerSlider from '../components/BannerSlider';
 import soffa from '../assets/soffa.jpg';
+import singleSoffa from '../assets/single_soffa.jpg';
+import singleChair from '../assets/single_chair.jpg';
+import youtubeIcon from '../assets/svg/youtube.svg';
+import instagramIcon from '../assets/svg/instal.svg';
+import facebookIcon from '../assets/svg/facebook.svg';
+import demo from '../assets/svg/demo.svg';
 import chair from '../assets/chair.jpg';
 import ProductCard from "../components/ProductCard";
 import Banner from "../components/Banner";
+import CategoryCard from "../components/CategoryCard";
+import SectionHeading from "../components/SectionHeading";
+import ReviewCard from "../components/ReviewCard";
 
 function Home() {
  const slides = [
@@ -59,6 +68,53 @@ function Home() {
             discount: 25,
         },
     ];
+    const categories = [
+        {
+            name: 'Sofas',
+            image: singleSoffa,
+            url: '/shop?category=soffa'
+        },
+        {
+            name: 'Chairs',
+            image: singleChair,
+            url: '/shop?category=chair'
+        },
+    ];
+
+    const followUsLinks = [
+        {
+            name: 'YouTube',
+            url: 'https://www.youtube.com',
+            image: youtubeIcon,
+        },
+        {
+            name: 'Instagram',
+            url: 'https://www.instagram.com',
+            image: instagramIcon
+        },
+        {
+            name: 'Facebook',
+            url: 'https://www.facebook.com',
+            image: facebookIcon
+        }
+    ]
+
+    const reviews = [
+        {
+            name: 'Ravina B.',
+            review: 'Nice material and nice service. Rate is reasonable compare to other. Thank you.'
+        },
+        {
+            name: 'Pratima',
+            review: 'Their whatsapp service are very good. I got full support and timely answer. I have bought for my friend as gift. nice dress.'
+        },
+        {
+            name: 'Roshni raahi',
+            review: 'I was redirected from instagram . and this was better than expected.'
+        }
+    ];
+
+
   return (
     <div>
       <BannerSlider 
@@ -72,13 +128,23 @@ function Home() {
         backgroundColor="#333" />
 
         <div>
+            <SectionHeading title="Category" leftIcon={demo} rightIcon={demo}/>
+            <div className="category-container" style={{marginTop: '0'}}>
+                {categories.map((cat, index) => (
+                    <CategoryCard key={index} name={cat.name} image={cat.image} url={cat.url} />
+                ))}
+            </div>
+        </div>
+
+        <div className='container'>
             <div>
-                <h2 style={{ textAlign: 'center', margin: '20px 0' }}>Featured Products</h2>
+                <SectionHeading title="Featured Products" leftIcon={demo} rightIcon={demo}/>
             </div>
             <div style={{
                 display: 'flex',
                 flexWrap: "wrap",
                 gap: '0',
+                justifyContent: 'center',
             }}>
                 {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
@@ -86,7 +152,7 @@ function Home() {
             </div>
         </div>
 
-        <div>
+        <div className='container' style={{padding: '50px 0 0'}}>
             <Banner
                 imageUrl={soffa}
                 title="Summer Collection"
@@ -101,6 +167,54 @@ function Home() {
             />
         </div>
 
+        <div className="container">
+            <SectionHeading title="Trending Products" leftIcon={demo} rightIcon={demo}/>
+            <div style={{
+                display: 'flex',
+                flexWrap: "wrap",
+                gap: '0',
+                justifyContent: 'center',
+            }}>
+                {products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
+            </div>
+        </div>
+
+        <div className='container' style={{padding: '50px 0'}}>
+            <Banner
+                imageUrl={chair}
+                title="Exclusive Offer"
+                subtitle="Limited Time Only"
+                description="Get 20% off on your first purchase. Use code: FIRST20 at checkout."
+                ctaText="Grab Now"
+                ctaLink="#"
+                layout="left"
+                backgroundColor="#fff3e0"
+                textColor="#333"
+                ctaColor="#ff9800"
+            />
+        </div>
+
+        <div className="container">
+            <SectionHeading title="Customer Reviews" leftIcon={demo} rightIcon={demo} color="#caa636"/>
+            <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center',gap: '20px'}}>
+                {reviews.map((item, index) => (
+                    <ReviewCard key={index} name={item.name} review={item.review} />
+                ))}
+            </div>
+        </div>
+
+        <div className="container">
+            <SectionHeading title="Follow Us" leftIcon={demo} rightIcon={demo} color="#caa636"/>
+            <div>
+                <div className="category-container" style={{marginTop: '0'}}>
+                    {followUsLinks.map((cat, index) => (
+                        <CategoryCard key={index} name={cat.name} image={cat.image} url={cat.url} />
+                    ))}
+                </div>
+            </div>
+        </div>
     </div>
   )
 }

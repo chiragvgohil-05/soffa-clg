@@ -1,0 +1,18 @@
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 40px 0 20px;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #caa636;
+}
+
+.decor-icon {
+    width: 32px;
+    height: auto;
+}

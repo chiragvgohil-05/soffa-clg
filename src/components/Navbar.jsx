@@ -47,7 +47,6 @@ const Navbar = () => {
         <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
           <li><NavLink to="/" end className="nav-item" onClick={closeMenu}>Home</NavLink></li>
           <li><NavLink to="/shop" className="nav-item" onClick={closeMenu}>Shop</NavLink></li>
-          <li><NavLink to="/about" className="nav-item" onClick={closeMenu}>About</NavLink></li>
           <li><NavLink to="/contact" className="nav-item" onClick={closeMenu}>Contact</NavLink></li>
 
           {/* Mobile-only items */}
@@ -67,8 +66,8 @@ const Navbar = () => {
                 </form>
               </li>
               <li className="mobile-only-icons">
-                <NavLink to="/account" className="icon-link" onClick={closeMenu}>
-                  <FaUser className="icon" title="Account" />
+                <NavLink to="/login" className="icon-link" onClick={closeMenu}>
+                  <FaUser className="icon" title="Register" />
                 </NavLink>
                 <NavLink to="/cart" className="icon-link" onClick={closeMenu}>
                   <FaShoppingCart className="icon" title="Cart" />
@@ -95,8 +94,8 @@ const Navbar = () => {
                 </form>
               )}
             </div>
-            <NavLink to="/account" className="icon-link">
-              <FaUser className="icon" title="Account" />
+            <NavLink to="/login" className="icon-link">
+              <FaUser className="icon" title="Register" />
             </NavLink>
             <NavLink to="/cart" className="icon-link">
               <FaShoppingCart className="icon" title="Cart" />
