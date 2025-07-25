@@ -16,12 +16,61 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.desktop-container{
+    display: block;
+}
+
+.mobile-container {
+    display: none;
+}
+
 .container {
     width: 100%;
     padding-right: var(--bs-gutter-x, 0.75rem);
     padding-left: var(--bs-gutter-x, 0.75rem);
     margin-right: auto;
     margin-left: auto;
+}
+
+/*shop page css*/
+.shop-page{
+    display: flex;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    padding: 20px !important;
+    margin-top: 30px;
+}
+
+.shop-product-grid{
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+@media (max-width: 425px) {
+    .shop-product-grid {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .desktop-container{
+        display: none;
+    }
+
+    .mobile-container {
+        display: block;
+    }
+
+    .shop-page{
+        flex-direction: column;
+        padding: 0 !important;
+    }
+    .shop-product-grid{
+        padding: 20px;
+    }
 }
 
 @media (min-width: 425px) {

@@ -43,6 +43,7 @@ function Home() {
             reviewCount: 124,
             imageUrl: soffa,
             isNew: true,
+            inStock: true,
             discount: 30,
         },
         {
@@ -143,7 +144,7 @@ function Home() {
             <div style={{
                 display: 'flex',
                 flexWrap: "wrap",
-                gap: '0',
+                gap: '20px',
                 justifyContent: 'center',
             }}>
                 {products.map((product) => (
@@ -172,7 +173,7 @@ function Home() {
             <div style={{
                 display: 'flex',
                 flexWrap: "wrap",
-                gap: '0',
+                gap: '20px',
                 justifyContent: 'center',
             }}>
                 {products.map((product) => (
