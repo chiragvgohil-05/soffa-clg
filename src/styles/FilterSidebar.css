@@ -72,7 +72,7 @@
     font-size: 14px;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
-    background-color: #f9f9f9;
+    /*background-color: #f9f9f9;*/
     transition: all 0.2s ease;
 }
 .shop-filter-sidebar .search-input:focus {
@@ -93,7 +93,7 @@
     font-size: 14px;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
-    background-color: #f9f9f9;
+    /*background-color: #f9f9f9;*/
     appearance: none;
     transition: all 0.2s ease;
     cursor: pointer;

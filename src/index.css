@@ -1,8 +1,6 @@
 html, body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
     padding: 0;
@@ -11,10 +9,8 @@ html, body {
     overflow-x: hidden;
     height: 100%;
  }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+button, textarea{
+    font-family: 'Arial', sans-serif !important;
 }
 
 .desktop-container{
@@ -49,7 +45,7 @@ code {
     gap: 20px;
 }
 
-@media (max-width: 425px) {
+@media (max-width: 426px) {
     .shop-product-grid {
         justify-content: center;
     }
@@ -73,7 +69,7 @@ code {
     }
 }
 
-@media (min-width: 425px) {
+@media (min-width: 426px) {
     .container {
         padding: 0;
     width: 100%;}

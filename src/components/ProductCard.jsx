@@ -16,8 +16,7 @@ const ProductCard = ({ product }) => {
         imageUrl,
         isNew,
         discount,
-        colorsAvailable,
-        inStock, // Added inStock property
+        inStock,
     } = product;
 
     const handleAddToCart = () => {
