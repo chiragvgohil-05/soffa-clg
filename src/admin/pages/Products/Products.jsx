@@ -130,6 +130,7 @@ const Products = () => {
 
     const handleEdit = (productId) => {
         console.log('Edit product:', productId);
+        navigate(`/admin/products/edit/${productId}`);
         // Implement edit logic
     };
 

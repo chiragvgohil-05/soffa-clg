@@ -118,7 +118,7 @@
 }
 
 /* Admin Actions */
-.product-actions {
+.admin-product-actions {
     display: flex;
     gap: 10px;
     margin-bottom: 12px;

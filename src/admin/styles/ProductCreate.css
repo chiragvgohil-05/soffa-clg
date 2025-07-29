@@ -1,12 +1,15 @@
 /* Main container styles */
 .product-form-container {
-    min-height: 100vh;
     background-color: #f9fafb;
     padding: 2rem 0;
+    height: 100%;
+    display:  flex;
+    align-items:  center;
+    width: 100%;
 }
 
 .product-form-wrapper {
-    max-width: 56rem;
+     width:  100%;
     margin-left: auto;
     margin-right: auto;
     padding-left: 1rem;
@@ -88,49 +91,23 @@
     .product-form-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    .product-form-full-width {
+        grid-column: span 2;
+    }
 }
 
 .product-form-full-width {
     grid-column: span 1;
 }
 
-@media (min-width: 768px) {
-    .product-form-full-width {
-        grid-column: span 2;
+@media (max-width: 768px) {
+    .product-form-wrapper{
+        padding: 0;
     }
-}
-
-/* Input styles */
-.product-form-label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.5rem;
-}
-
-.product-form-input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-}
-
-.product-form-input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
-}
-
-.product-form-input-error {
-    border-color: #ef4444;
-}
-
-.product-form-error {
-    color: #ef4444;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
+    .product-form-container{
+        background-color: transparent;
+        padding: 0;
+    }
 }
 
 /* Image upload styles */
@@ -162,8 +139,7 @@
 .product-form-checkbox-group {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-}
+ }
 
 .product-form-checkbox {
     display: flex;
@@ -207,6 +183,7 @@
     align-items: center;
     gap: 0.5rem;
     transition: background-color 0.2s;
+    cursor: pointer;
 }
 
 .product-form-reset:hover {
@@ -222,19 +199,24 @@
     align-items: center;
     gap: 0.5rem;
     transition: background-color 0.2s;
+    cursor: pointer;
+
 }
 
 .product-form-submit-primary {
     background-color: #2563eb;
+    border: 1px solid #2563eb;
 }
 
 .product-form-submit-primary:hover {
-    background-color: #1d4ed8;
+    background-color: transparent;
+    color: #2563eb;
 }
 
 .product-form-submit-disabled {
     background-color: #9ca3af;
     cursor: not-allowed;
+    border: 1px solid #9ca3af;
 }
 
 .product-form-spinner {

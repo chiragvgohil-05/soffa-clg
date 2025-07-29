@@ -12,6 +12,7 @@ const Contact = () => {
         subject: '',
         message: ''
     });
+
     const slides = [
         {
             id: 1,
@@ -22,13 +23,19 @@ const Contact = () => {
             buttonLink: ''
         },
     ];
+
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // You can handle API call or validation here
+        // Basic validation (optional)
+        if (!form.name || !form.email || !form.subject || !form.message) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
         console.log('Form submitted:', form);
         alert('Message sent!');
         setForm({ name: '', email: '', subject: '', message: '' });
@@ -36,17 +43,17 @@ const Contact = () => {
 
     return (
         <>
-                <div>
-                    <BannerSlider
-                        slides={slides}
-                        height="500px"
-                        autoPlay={true}
-                        interval={3000}
-                        showArrows={true}
-                        showDots={true}
-                        dotActiveColor="#4CAF50"
-                        backgroundColor="#333" />
-                </div>
+            <BannerSlider
+                slides={slides}
+                height="500px"
+                autoPlay={true}
+                interval={3000}
+                showArrows={true}
+                showDots={true}
+                dotActiveColor="#4CAF50"
+                backgroundColor="#333"
+            />
+
             <div className="contact-container">
                 <h2 className="contact-title">Contact Us</h2>
                 <p className="contact-description">
@@ -54,32 +61,46 @@ const Contact = () => {
                 </p>
                 <form className="contact-form" onSubmit={handleSubmit}>
                     <Input
+                        label="Name"
                         name="name"
                         placeholder="Your Name"
                         value={form.name}
                         onChange={handleChange}
+                        required
                     />
                     <Input
+                        label="Email"
                         name="email"
                         type="email"
                         placeholder="Your Email"
                         value={form.email}
                         onChange={handleChange}
+                        required
                     />
                     <Input
+                        label="Subject"
                         name="subject"
                         placeholder="Subject"
                         value={form.subject}
                         onChange={handleChange}
+                        required
                     />
-                    <textarea
-                        name="message"
-                        placeholder="Your Message"
-                        className="contact-textarea"
-                        rows="5"
-                        value={form.message}
-                        onChange={handleChange}
-                    ></textarea>
+                    <div className="input-group">
+                        <label className="input-label" htmlFor="message">
+                            Message<span className="required-star">*</span>
+                        </label>
+                        <textarea
+                            name="message"
+                            id="message"
+                            placeholder="Your Message"
+                            className="input contact-textarea"
+                            rows="5"
+                            value={form.message}
+                            onChange={handleChange}
+                            required
+                        ></textarea>
+                    </div>
+
                     <button type="submit" className="contact-button">Send Message</button>
                 </form>
             </div>

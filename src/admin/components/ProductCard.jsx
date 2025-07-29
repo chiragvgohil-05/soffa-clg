@@ -43,16 +43,9 @@ const ProductCard = ({
                     <span className="review-count">({reviewCount})</span>
                 </div>
 
-                <div className="product-actions">
+                <div className="admin-product-actions">
                     <button className="edit-btn" onClick={() => onEdit(id)}>Edit</button>
                     <button className="delete-btn" onClick={() => onDelete(id)}>Delete</button>
-                </div>
-
-                <div className="product-meta">
-                    <span className="product-id">ID: {id}</span>
-                    <span className="stock-status">
-            {inStock ? 'In Stock' : 'Out of Stock'}
-          </span>
                 </div>
             </div>
         </div>

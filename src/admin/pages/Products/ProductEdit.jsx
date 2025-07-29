@@ -152,7 +152,7 @@ const ProductCreate = () => {
                     <div className="product-form-header">
                         <div className="product-form-header-content">
                             <div>
-                                <h1 className="product-form-title">Add New Product</h1>
+                                <h1 className="product-form-title">Edit Product</h1>
                                 <p className="product-form-subtitle">Fill in the product details below</p>
                             </div>
                         </div>
@@ -301,12 +301,12 @@ const ProductCreate = () => {
                                 {isSubmitting ? (
                                     <>
                                         <div className="product-form-spinner"></div>
-                                        <span>Adding Product...</span>
+                                        <span>Editing Product...</span>
                                     </>
                                 ) : (
                                     <>
                                         <FaPlus className="w-4 h-4" />
-                                        <span>Add Product</span>
+                                        <span>Edit Product</span>
                                     </>
                                 )}
                             </button>
