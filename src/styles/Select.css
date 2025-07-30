@@ -8,11 +8,12 @@
 .select {
     width: 100%;
     padding: 12px 15px;
-    font-size: 16px;
+    font-size: 14px;
     border-radius: 6px;
     border: 1px solid #ccc;
     appearance: none;
     background-color: #fff;
+
 }
 
 .dropdown-icon {
@@ -21,3 +22,30 @@
     pointer-events: none;
     fill: #666;
 }
+
+.select-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.required-star {
+    color: red;
+    margin-left: 4px;
+}
+
+.select-error select {
+    border-color: red;
+}
+
+.select-error-message {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: block;
+}
+.select:focus {
+    outline: none;
+    border-color: #007BFF;
+}
+

@@ -1,7 +1,5 @@
 /* Main container styles */
 .product-form-container {
-    background-color: #f9fafb;
-    padding: 2rem 0;
     height: 100%;
     display:  flex;
     align-items:  center;
@@ -12,8 +10,6 @@
      width:  100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 /* Card styles */
@@ -226,6 +222,22 @@
     border-top-color: transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+.product-image-section{
+    grid-column:  span 2;
+}
+
+.product-form-section,
+.product-image-section{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 @keyframes spin {

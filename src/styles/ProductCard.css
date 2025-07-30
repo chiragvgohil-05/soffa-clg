@@ -217,3 +217,14 @@
     opacity: 0.9;
     cursor: not-allowed;
 }
+
+.product-meta {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.product-meta p{
+    margin: 0;
+}

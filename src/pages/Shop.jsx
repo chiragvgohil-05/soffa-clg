@@ -19,7 +19,6 @@ const Shop = () => {
         {
             id: 1,
             name: 'Wireless Headphones',
-            price: 299,
             originalPrice: 349,
             category: 'soffa',
             brand: 'TechSound',
@@ -29,12 +28,10 @@ const Shop = () => {
             inStock: true,
             isNew: true,
             discount: 14,
-            colorsAvailable: ['black', 'white'],
         },
         {
             id: 2,
             name: 'Running Shoes',
-            price: 159,
             originalPrice: 189,
             category: 'chair',
             brand: 'SportMax',
@@ -44,12 +41,10 @@ const Shop = () => {
             inStock: true,
             isNew: false,
             discount: 16,
-            colorsAvailable: ['blue', 'red'],
         },
         {
             id: 3,
             name: 'Coffee Maker',
-            price: 89,
             originalPrice: 99,
             category: 'soffa',
             brand: 'BrewMaster',
@@ -59,7 +54,6 @@ const Shop = () => {
             inStock: false,
             isNew: false,
             discount: 10,
-            colorsAvailable: ['silver'],
         },
         // Add remaining products similarly...
     ]);
@@ -78,7 +72,13 @@ const Shop = () => {
     };
 
     const clearFilters = () => {
-        setFilters({ category: '', brand: '', priceRange: [0, 2000], minRating: 0, inStock: false });
+        setFilters({
+            category: '',
+            brand: '',
+            priceRange: [0, 2000],
+            minRating: 0,
+            inStock: false,
+        });
         setSearchTerm('');
     };
 
@@ -87,13 +87,15 @@ const Shop = () => {
 
     const filteredProducts = useMemo(() => {
         return products.filter(product => {
+            const price = product.originalPrice - (product.originalPrice * product.discount / 100);
+
             return (
                 product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
                 (!filters.category || product.category === filters.category) &&
                 (!filters.brand || product.brand === filters.brand) &&
-                product.price >= filters.priceRange[0] &&
-                product.price <= filters.priceRange[1] &&
-                product.rating >= filters.minRating &&
+                price >= filters.priceRange[0] &&
+                price <= filters.priceRange[1] &&
+                (!filters.minRating || product.rating >= filters.minRating) &&
                 (!filters.inStock || product.inStock)
             );
         });

@@ -3,22 +3,25 @@ import { FaPlus, FaUpload, FaTimes, FaCheck } from 'react-icons/fa';
 import '../../styles/ProductCreate.css';
 import Input from "../../../components/Input";
 import CheckBox from "../../components/CheckBox";
+import Select from "../../../components/Select";
 
 const ProductCreate = () => {
     const [formData, setFormData] = useState({
         name: '',
         price: '',
         originalPrice: '',
-        rating: '0',
-        reviewCount: '0',
         imageUrl: '',
         isNew: false,
         discount: '0',
-        inStock: true
+        inStock: true,
+        brand: '',
+        category: '',
+        description: ''
     });
 
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [filters, setFilters] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -49,20 +52,19 @@ const ProductCreate = () => {
             newErrors.originalPrice = 'Original price should be greater than or equal to current price';
         }
 
-        if (parseFloat(formData.rating) < 0 || parseFloat(formData.rating) > 5) {
-            newErrors.rating = 'Rating must be between 0 and 5';
-        }
-
-        if (parseInt(formData.reviewCount) < 0) {
-            newErrors.reviewCount = 'Review count cannot be negative';
-        }
-
         if (formData.imageUrl && !isValidUrl(formData.imageUrl)) {
             newErrors.imageUrl = 'Please enter a valid URL';
         }
 
         if (parseFloat(formData.discount) < 0 || parseFloat(formData.discount) > 100) {
             newErrors.discount = 'Discount must be between 0 and 100';
+        }
+
+        if (!formData.brand.trim()) {
+            newErrors.brand = 'Brand is required';
+        }
+        if (!formData.category.trim()) {
+            newErrors.category = 'Category is required';
         }
 
         setErrors(newErrors);
@@ -93,16 +95,17 @@ const ProductCreate = () => {
 
             // Process the form data
             const productData = {
-                id: Date.now(), // Generate temporary ID
+                id: Date.now(),
                 name: formData.name.trim(),
                 price: parseFloat(formData.price),
                 originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
-                rating: parseFloat(formData.rating),
-                reviewCount: parseInt(formData.reviewCount),
                 imageUrl: formData.imageUrl || null,
                 isNew: formData.isNew,
                 discount: parseFloat(formData.discount),
-                inStock: formData.inStock
+                inStock: formData.inStock,
+                brand: formData.brand.trim(),
+                category: formData.category.trim(),
+                description: formData.description.trim()
             };
 
             console.log('Product added:', productData);
@@ -113,12 +116,13 @@ const ProductCreate = () => {
                     name: '',
                     price: '',
                     originalPrice: '',
-                    rating: '0',
-                    reviewCount: '0',
                     imageUrl: '',
                     isNew: false,
                     discount: '0',
-                    inStock: true
+                    inStock: true,
+                    brand: '',
+                    category: '',
+                    description: ''
                 });
             }, 2000);
 
@@ -134,14 +138,26 @@ const ProductCreate = () => {
             name: '',
             price: '',
             originalPrice: '',
-            rating: '0',
-            reviewCount: '0',
             imageUrl: '',
             isNew: false,
             discount: '0',
-            inStock: true
+            inStock: true,
+            brand: '',
+            category: '',
+            description: ''
         });
         setErrors({});
+    };
+
+    const categoryOptions = [
+        { label: "Sofa", value: "soffa" },
+        { label: "Chair", value: "chair" },
+    ];
+    const onFilterChange = (key, value) => {
+        setFilters((prev) => ({
+            ...prev,
+            [key]: value
+        }));
     };
 
     return (
@@ -161,103 +177,138 @@ const ProductCreate = () => {
                     {/* Form */}
                     <div className="product-form-content">
                         <div className="product-form-grid">
-                            {/* Product Name */}
-                            <div className="product-form-full-width">
-                                <Input
-                                    label="Product Name"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    placeholder="Enter product name"
-                                    className="product-form-input"
-                                    required
-                                    error={errors.name}
-                                />
+
+                            <div className="product-form-section">
+                                {/* Product Name */}
+                                <div className="product-form-full-width">
+                                    <Input
+                                        label="Product Name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        placeholder="Enter product name"
+                                        className="product-form-input"
+                                        required
+                                        error={errors.name}
+                                    />
+                                </div>
+
+                                {/* Description */}
+                                <div className="product-form-full-width">
+                                    <Input
+                                        label="Description"
+                                        name="description"
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                        placeholder="Brief product description"
+                                        textarea
+                                    />
+                                </div>
                             </div>
 
-                            {/* Price */}
-                            <div>
-                                <Input
-                                    label="Current Price ($)"
-                                    name="price"
-                                    type="number"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                    placeholder="0.00"
-                                    required
-                                    error={errors.price}
-                                />
+                            <div className="product-form-section">
+                                {/* Original Price */}
+                                <div>
+                                    <Input
+                                        label="Original Price ($)"
+                                        name="originalPrice"
+                                        type="number"
+                                        value={formData.originalPrice}
+                                        onChange={handleChange}
+                                        placeholder="0.00"
+                                        error={errors.originalPrice}
+                                    />
+                                </div>
+
+                                {/* Price */}
+                                <div>
+                                    <Input
+                                        label="Current Price ($)"
+                                        name="price"
+                                        type="number"
+                                        value={formData.price}
+                                        onChange={handleChange}
+                                        placeholder="0.00"
+                                        required
+                                        error={errors.price}
+                                    />
+                                </div>
                             </div>
 
-                            {/* Original Price */}
-                            <div>
-                                <Input
-                                    label="Original Price ($)"
-                                    name="originalPrice"
-                                    type="number"
-                                    value={formData.originalPrice}
-                                    onChange={handleChange}
-                                    placeholder="0.00"
-                                    error={errors.originalPrice}
-                                />
+                            <div className="product-form-section">
+                                <div>
+                                    <Input
+                                        label="Brand"
+                                        name="brand"
+                                        value={formData.brand}
+                                        onChange={handleChange}
+                                        placeholder="e.g. Nike, Samsung"
+                                        required
+                                        error={errors.brand}
+                                    />
+                                </div>
+
+                                {/* Discount */}
+                                <div>
+                                    <Input
+                                        label="Discount (%)"
+                                        name="discount"
+                                        type="number"
+                                        value={formData.discount}
+                                        onChange={handleChange}
+                                        placeholder="0"
+                                        min="0"
+                                        max="100"
+                                        error={errors.discount}
+                                    />
+                                </div>
                             </div>
 
-                            {/* Rating */}
-                            <div>
-                                <Input
-                                    label="Rating (0-5)"
-                                    name="rating"
-                                    type="number"
-                                    value={formData.rating}
-                                    onChange={handleChange}
-                                    step="0.1"
-                                    min="0"
-                                    max="5"
-                                    error={errors.rating}
-                                />
+                            <div className="product-form-section">
+                                {/* Category */}
+                                <div>
+                                    <Select
+                                        label="Category"
+                                        name="category"
+                                        options={['soffa', 'chair']}
+                                        value={formData.category}
+                                        onChange={(e) => handleChange({ target: { name: 'category', value: e.target.value } })}
+                                        placeholder="Select Category"
+                                        required
+                                        error={errors.category}
+                                    />
+                                </div>
+
+                                {/* Tag */}
+                                <div>
+                                    <Input
+                                        label="Tag"
+                                        name="discount"
+                                        type="number"
+                                        value={formData.discount}
+                                        onChange={handleChange}
+                                        placeholder="0"
+                                        min="0"
+                                        max="100"
+                                        error={errors.discount}
+                                    />
+                                </div>
                             </div>
 
-                            {/* Review Count */}
-                            <div>
-                                <Input
-                                    label="Review Count"
-                                    name="reviewCount"
-                                    type="number"
-                                    value={formData.reviewCount}
-                                    onChange={handleChange}
-                                    min="0"
-                                    error={errors.reviewCount}
-                                />
+                            <div className="product-image-section">
+                                {/* Image URL */}
+                                <div className="product-form-full-width">
+                                    <Input
+                                        label="Product Image URL"
+                                        name="imageUrl"
+                                        type="url"
+                                        value={formData.imageUrl}
+                                        onChange={handleChange}
+                                        placeholder="https://example.com/image.jpg"
+                                        error={errors.imageUrl}
+                                    />
+                                </div>
                             </div>
-
-                            {/* Image URL */}
-                            <div className="product-form-full-width">
-                                <Input
-                                    label="Product Image URL"
-                                    name="imageUrl"
-                                    type="url"
-                                    value={formData.imageUrl}
-                                    onChange={handleChange}
-                                    placeholder="https://example.com/image.jpg"
-                                    error={errors.imageUrl}
-                                />
-                            </div>
-
-                            {/* Discount */}
-                            <div>
-                                <Input
-                                    label="Discount (%)"
-                                    name="discount"
-                                    type="number"
-                                    value={formData.discount}
-                                    onChange={handleChange}
-                                    placeholder="0"
-                                    min="0"
-                                    max="100"
-                                    error={errors.discount}
-                                />
-                            </div>
-
                             {/* Checkboxes */}
                             <div className="product-form-checkbox-group">
 

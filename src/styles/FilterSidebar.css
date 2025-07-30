@@ -197,7 +197,9 @@
     font-size: 14px;
     color: #555;
 }
-
+.shop-filter-sidebar .input-group{
+    width: 100%;
+}
 @media (max-width: 768px) {
     .shop-filter-sidebar {
         width: 100%;

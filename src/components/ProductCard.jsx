@@ -9,24 +9,27 @@ const ProductCard = ({ product }) => {
     const {
         id,
         name,
-        price,
         originalPrice,
-        rating,
-        reviewCount,
+        discount = 0,
+        rating = 0,
+        reviewCount = 0,
         imageUrl,
-        isNew,
-        discount,
-        inStock,
+        isNew = false,
+        inStock = true,
+        brand = 'Unknown',
+        category = 'General',
+        description = '',
     } = product;
 
+    const price = originalPrice - (originalPrice * discount / 100);
+
     const handleAddToCart = () => {
-        if (!inStock) return; // Don't proceed if out of stock
+        if (!inStock) return;
         console.log(`Added ${id} to cart`);
-        // Add your cart logic here
     };
 
     const toggleWishlist = () => {
-        if (!inStock) return; // Optionally prevent wishlisting out-of-stock items
+        if (!inStock) return;
         setIsWishlisted(!isWishlisted);
         console.log(`${name} ${isWishlisted ? 'removed from' : 'added to'} wishlist`);
     };
@@ -34,7 +37,6 @@ const ProductCard = ({ product }) => {
     const handleQuickView = () => {
         if (!inStock) return;
         console.log(`Quick view for ${name}`);
-        // Add quick view logic here
     };
 
     return (
@@ -48,21 +50,15 @@ const ProductCard = ({ product }) => {
 
                 {!inStock && <span className="product-badge stock">Out of Stock</span>}
                 {isNew && inStock && <span className="product-badge new">New</span>}
-                {discount > 0 && inStock && <span className="product-badge discount">-{discount}%</span>}
+                {discount > 0 && inStock && (
+                    <span className="product-badge discount">-{discount}%</span>
+                )}
 
                 <div className={`product-actions ${isHovered ? 'visible' : ''}`}>
-                    <button
-                        className="action-btn"
-                        onClick={toggleWishlist}
-                        disabled={!inStock}
-                    >
+                    <button className="action-btn" onClick={toggleWishlist} disabled={!inStock}>
                         <FaHeart className={isWishlisted ? 'wishlisted' : ''} />
                     </button>
-                    <button
-                        className="action-btn"
-                        onClick={handleQuickView}
-                        disabled={!inStock}
-                    >
+                    <button className="action-btn" onClick={handleQuickView} disabled={!inStock}>
                         <FaEye />
                     </button>
                 </div>
@@ -78,12 +74,20 @@ const ProductCard = ({ product }) => {
 
                 <h3 className="product-name">{name}</h3>
 
+                <div className="product-meta">
+                    <p><strong>Brand:</strong> {brand}</p>
+                    <p><strong>Category:</strong> {category}</p>
+                </div>
+
+                <p className="product-description">{description}</p>
+
                 <div className="product-pricing">
                     <span className="current-price">${price.toFixed(2)}</span>
                     {originalPrice > price && (
                         <span className="original-price">${originalPrice.toFixed(2)}</span>
                     )}
                 </div>
+
                 <button
                     className={`add-to-cart-btn ${!inStock ? 'disabled' : ''}`}
                     onClick={handleAddToCart}
