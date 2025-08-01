@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { FaPlus, FaUpload, FaTimes, FaCheck } from 'react-icons/fa';
+import { FaPlus, FaTimes } from 'react-icons/fa';
 import '../../styles/ProductCreate.css';
 import Input from "../../../components/Input";
 import CheckBox from "../../components/CheckBox";
 import Select from "../../../components/Select";
+import ImagePicker from "../../../components/ImagePicker";
+import TextArea from "../../../components/TextArea";
 
 const ProductCreate = () => {
     const [formData, setFormData] = useState({
@@ -21,7 +23,6 @@ const ProductCreate = () => {
 
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [filters, setFilters] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -149,15 +150,8 @@ const ProductCreate = () => {
         setErrors({});
     };
 
-    const categoryOptions = [
-        { label: "Sofa", value: "soffa" },
-        { label: "Chair", value: "chair" },
-    ];
-    const onFilterChange = (key, value) => {
-        setFilters((prev) => ({
-            ...prev,
-            [key]: value
-        }));
+    const handleImagesChange = (images) => {
+        console.log('Selected images:', images);
     };
 
     return (
@@ -177,7 +171,6 @@ const ProductCreate = () => {
                     {/* Form */}
                     <div className="product-form-content">
                         <div className="product-form-grid">
-
                             <div className="product-form-section">
                                 {/* Product Name */}
                                 <div className="product-form-full-width">
@@ -192,25 +185,13 @@ const ProductCreate = () => {
                                         error={errors.name}
                                     />
                                 </div>
-
-                                {/* Description */}
-                                <div className="product-form-full-width">
-                                    <Input
-                                        label="Description"
-                                        name="description"
-                                        value={formData.description}
-                                        onChange={handleChange}
-                                        placeholder="Brief product description"
-                                        textarea
-                                    />
-                                </div>
                             </div>
 
                             <div className="product-form-section">
                                 {/* Original Price */}
                                 <div>
                                     <Input
-                                        label="Original Price ($)"
+                                        label="Original Price (₹)"
                                         name="originalPrice"
                                         type="number"
                                         value={formData.originalPrice}
@@ -223,7 +204,7 @@ const ProductCreate = () => {
                                 {/* Price */}
                                 <div>
                                     <Input
-                                        label="Current Price ($)"
+                                        label="Selling Price (₹)"
                                         name="price"
                                         type="number"
                                         value={formData.price}
@@ -278,49 +259,36 @@ const ProductCreate = () => {
                                         error={errors.category}
                                     />
                                 </div>
+                            </div>
 
-                                {/* Tag */}
-                                <div>
-                                    <Input
-                                        label="Tag"
-                                        name="discount"
-                                        type="number"
-                                        value={formData.discount}
+                            <div className="product-image-section">
+                                {/* Description */}
+                                <div className="product-form-full-width">
+                                    <TextArea
+                                        label="Description"
+                                        name="description"
+                                        value={formData.description}
                                         onChange={handleChange}
-                                        placeholder="0"
-                                        min="0"
-                                        max="100"
-                                        error={errors.discount}
+                                        placeholder="Brief product description"
+                                        rows={4}
                                     />
                                 </div>
                             </div>
 
                             <div className="product-image-section">
-                                {/* Image URL */}
                                 <div className="product-form-full-width">
-                                    <Input
-                                        label="Product Image URL"
-                                        name="imageUrl"
-                                        type="url"
-                                        value={formData.imageUrl}
-                                        onChange={handleChange}
-                                        placeholder="https://example.com/image.jpg"
-                                        error={errors.imageUrl}
+                                    <ImagePicker
+                                        onFilesChange={handleImagesChange}
+                                        multiple={true}
+                                        maxFiles={8}
+                                        maxFileSize={10} // 10MB
+                                        acceptedFormats={['image/jpeg', 'image/png', 'image/webp']}
                                     />
                                 </div>
                             </div>
+
                             {/* Checkboxes */}
                             <div className="product-form-checkbox-group">
-
-                                <div className="product-form-checkbox">
-                                    <CheckBox
-                                        name="isNew"
-                                        label="Mark as New Product"
-                                        checked={formData.isNew}
-                                        onChange={(e) => setFormData({ ...formData, isNew: e.target.checked })}
-                                    />
-                                </div>
-
                                 <div className="product-form-checkbox">
                                     <CheckBox
                                         name="inStock"

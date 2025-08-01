@@ -178,7 +178,7 @@ const ProductCreate = () => {
                             {/* Price */}
                             <div>
                                 <Input
-                                    label="Current Price ($)"
+                                    label="Current Price (₹)"
                                     name="price"
                                     type="number"
                                     value={formData.price}
@@ -192,7 +192,7 @@ const ProductCreate = () => {
                             {/* Original Price */}
                             <div>
                                 <Input
-                                    label="Original Price ($)"
+                                    label="Original Price (₹)"
                                     name="originalPrice"
                                     type="number"
                                     value={formData.originalPrice}

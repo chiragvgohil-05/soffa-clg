@@ -1,13 +1,13 @@
 /* Main container styles */
 .product-form-container {
     height: 100%;
-    display:  flex;
-    align-items:  center;
+    display: flex;
+    align-items: center;
     width: 100%;
 }
 
 .product-form-wrapper {
-     width:  100%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -83,28 +83,6 @@
     gap: 1.5rem;
 }
 
-@media (min-width: 768px) {
-    .product-form-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .product-form-full-width {
-        grid-column: span 2;
-    }
-}
-
-.product-form-full-width {
-    grid-column: span 1;
-}
-
-@media (max-width: 768px) {
-    .product-form-wrapper{
-        padding: 0;
-    }
-    .product-form-container{
-        background-color: transparent;
-        padding: 0;
-    }
-}
 
 /* Image upload styles */
 .product-form-image-upload {
@@ -135,7 +113,7 @@
 .product-form-checkbox-group {
     display: flex;
     flex-direction: column;
- }
+}
 
 .product-form-checkbox {
     display: flex;
@@ -224,12 +202,12 @@
     animation: spin 1s linear infinite;
 }
 
-.product-image-section{
-    grid-column:  span 2;
+.product-image-section {
+    grid-column: span 2;
 }
 
 .product-form-section,
-.product-image-section{
+.product-image-section {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -243,5 +221,42 @@
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@media (min-width: 768px) {
+    .product-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-form-full-width {
+        grid-column: span 2;
+    }
+}
+
+.product-form-full-width {
+    grid-column: span 1;
+}
+
+@media (max-width: 767px) {
+    .product-form-grid {
+        display: flex;
+        flex-direction: column;
+    }
+    .product-image-section,
+    .product-form-section{
+        padding: 0;
+        border: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-form-wrapper {
+        padding: 0;
+    }
+
+    .product-form-container {
+        background-color: transparent;
+        padding: 0;
     }
 }
