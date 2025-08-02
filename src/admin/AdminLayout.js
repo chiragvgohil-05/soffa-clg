@@ -5,7 +5,6 @@ import Topbar from './components/Topbar';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import Products from './pages/Products/Products';
-import Settings from './pages/Settings';
 import './styles/admin.css';
 import ProductCreate from "./pages/Products/ProductCreate";
 import ProductEdit from "./pages/Products/ProductEdit";
@@ -75,11 +74,9 @@ const AdminLayout = () => {
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="users" element={<Users />} />
                         <Route path="products" element={<Products />} />
-                        <Route path="settings" element={<Settings />} />
                         <Route path="products/create" element={<ProductCreate />} />
                         <Route path="products/edit/:id" element={<ProductEdit />} />
                         <Route path="/" element={<Navigate to="dashboard" replace />} />
-
                     </Routes>
                 </div>
             </div>
