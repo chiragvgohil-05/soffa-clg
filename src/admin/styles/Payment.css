@@ -1,0 +1,140 @@
+.payment-container {
+    width: 100%;
+     font-family: Arial, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.page-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+.payment-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.payment-search-bar {
+    display: flex;
+    position: relative;
+    align-items: center;
+    gap: 8px;
+}
+
+.payment-search-bar input {
+    padding: 10px 35px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.payment-search-icon {
+    color: #6b7280;
+    position: absolute;
+    left:  10px;
+}
+
+/* Table */
+.payment-table-container {
+    overflow-x: auto;
+}
+
+.payment-table {
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.payment-table th {
+    background-color: #e5e7eb;
+    font-weight: 600;
+    color: #374151;
+}
+
+.payment-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+.amount {
+    font-weight: bold;
+    color: #111827;
+}
+
+/* Status colors */
+.status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.status.completed { color: #10b981; }
+.status.pending { color: #f59e0b; }
+.status.failed { color: #ef4444; }
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Cards (Mobile) */
+.payment-cards {
+    display: none;
+}
+
+.payment-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.payment-id {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.no-results {
+    text-align: center;
+    color: #9ca3af;
+    padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .payment-table-container { display: none; }
+    .payment-cards { display: block; }
+}

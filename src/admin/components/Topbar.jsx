@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/topbar.css';
+import soffa from '../../assets/soffa.jpg';
 
 const Topbar = ({ toggleSidebar }) => {
     return (
@@ -12,14 +13,10 @@ const Topbar = ({ toggleSidebar }) => {
             </div>
 
             <div className="topbar-right">
-                <div className="topbar-icon">
-                    🔔
-                    <div className="notification-badge">3</div>
-                </div>
                 <div className="user-profile">
                     <img
                         className="user-avatar"
-                        src="https://i.pravatar.cc/100"
+                        src={soffa}
                         alt="User"
                     />
                     <span className="user-name">John Doe</span>

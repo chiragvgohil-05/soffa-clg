@@ -115,12 +115,12 @@
     padding: 0.3rem 0.5rem;
 }
 
-.search-icon {
+.user-search-icon {
     cursor: pointer;
     transition: color 0.3s ease;
 }
 
-.search-icon:hover {
+.user-search-icon:hover {
     color: #3498db;
 }
 

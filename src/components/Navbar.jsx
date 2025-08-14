@@ -81,7 +81,7 @@ const Navbar = () => {
         {!isMobile && (
           <div className="navbar-right">
             <div className={`search-container ${searchOpen ? 'open' : ''}`}>
-              <FaSearch className="search-icon" onClick={toggleSearch} />
+              <FaSearch className="user-search-icon" onClick={toggleSearch} />
               {searchOpen && (
                 <form onSubmit={handleSearch}>
                   <input

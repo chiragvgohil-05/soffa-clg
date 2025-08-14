@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import Dashboard from './pages/Dashboard';
-import Users from './pages/Users';
+import Payment from './pages/Payment';
 import Products from './pages/Products/Products';
 import './styles/admin.css';
 import ProductCreate from "./pages/Products/ProductCreate";
@@ -72,8 +72,9 @@ const AdminLayout = () => {
                 <div className="admin-content">
                     <Routes>
                         <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="users" element={<Users />} />
+                        {/*<Route path="users" element={<Users />} />*/}
                         <Route path="products" element={<Products />} />
+                        <Route path="payment" element={<Payment />} />
                         <Route path="products/create" element={<ProductCreate />} />
                         <Route path="products/edit/:id" element={<ProductEdit />} />
                         <Route path="/" element={<Navigate to="dashboard" replace />} />

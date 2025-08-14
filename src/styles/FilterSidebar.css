@@ -72,7 +72,7 @@
     font-size: 14px;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
-    /*background-color: #f9f9f9;*/
+    background-color: white !important;
     transition: all 0.2s ease;
 }
 .shop-filter-sidebar .search-input:focus {
