@@ -1,0 +1,152 @@
+/* Parent wrapper */
+.pdp {
+    display: flex;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+}
+
+/* LEFT SIDE (images) */
+.pdp__images {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pdp__main-image {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+.pdp__main-image img {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+.pdp__badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: green;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.pdp__badge.out {
+    background: red;
+}
+.pdp__thumbnails {
+    margin-top: 1rem;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.pdp__thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border 0.2s;
+}
+.pdp__thumb:hover {
+    border: 2px solid #0077ff;
+}
+.pdp__thumb.active {
+    border: 2px solid #0077ff;
+}
+
+/* RIGHT SIDE (content) */
+.pdp__content {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.pdp__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+.pdp__brand,
+.pdp__category {
+    font-size: 14px;
+    color: #666;
+}
+
+.pdp__price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+.pdp__final {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2c7;
+}
+.pdp__original {
+    text-decoration: line-through;
+    color: #888;
+}
+.pdp__discount {
+    color: red;
+    font-weight: bold;
+}
+
+.pdp__rating {
+    font-size: 14px;
+    color: #444;
+}
+
+.pdp__desc {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.pdp__btn {
+    background: #4CAF50;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.pdp_checkout_btn {
+    background: transparent;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: 1px solid black;
+}
+.pdp__btn:hover {
+    background: #379337;
+}
+.pdp__btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pdp {
+        flex-direction: column;
+        align-items: center;
+    }
+    .pdp__content {
+        width: 100%;
+    }
+}

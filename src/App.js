@@ -8,6 +8,7 @@ import MainLayout from './MainLayout';
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminLayout from "./admin/AdminLayout";
+import ProductPage from "./pages/ProductPage";
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/shop" element={<Shop />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/product/:id" element={<ProductPage />} />
                 </Route>
             </Routes>
         </Router>
