@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { FaShoppingCart, FaStar, FaHeart, FaEye } from 'react-icons/fa';
 import '../styles/ProductCard.css';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
     const {
         id,
@@ -37,6 +39,10 @@ const ProductCard = ({ product }) => {
     const handleQuickView = () => {
         if (!inStock) return;
         console.log(`Quick view for ${name}`);
+    };
+
+    const redirectProductDetail = () => {
+        navigate(`/product/${id}`);
     };
 
     return (
@@ -72,7 +78,7 @@ const ProductCard = ({ product }) => {
                     <span>({reviewCount})</span>
                 </div>
 
-                <h3 className="product-name">{name}</h3>
+                <h3 className="product-name " onClick={()=>redirectProductDetail()}>{name}</h3>
 
                 <div className="product-meta">
                     <p><strong>Brand:</strong> {brand}</p>
