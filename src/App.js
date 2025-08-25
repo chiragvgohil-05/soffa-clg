@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Contact from './pages/Contact';
@@ -12,24 +13,33 @@ import ProductPage from "./pages/ProductPage";
 import { Toaster } from 'react-hot-toast';
 
 function App() {
-    // simple auth check
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
+    const [auth, setAuth] = useState({
+        token: localStorage.getItem("token"),
+        role: localStorage.getItem("role")
+    });
+
+    // Helper to update auth after login/logout
+    const updateAuth = () => {
+        setAuth({
+            token: localStorage.getItem("token"),
+            role: localStorage.getItem("role")
+        });
+    };
 
     return (
         <>
             <Router>
                 <Routes>
                     {/* Public routes */}
-                    <Route path="/login" element={<Login/>} />
+                    <Route path="/login" element={<Login onLogin={updateAuth} />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
 
-                    {/* Admin routes (only if logged in & role=Admin) */}
+                    {/* Admin routes */}
                     <Route
                         path="/admin/*"
                         element={
-                            token && role === "Admin"
+                            auth.token && auth.role === "Admin"
                                 ? <AdminLayout />
                                 : <Navigate to="/login" replace />
                         }
@@ -38,7 +48,7 @@ function App() {
                     {/* User & Admin routes */}
                     <Route
                         element={
-                            token && (role === "User" || role === "Admin")
+                            auth.token && (auth.role === "User" || auth.role === "Admin")
                                 ? <MainLayout />
                                 : <Navigate to="/login" replace />
                         }

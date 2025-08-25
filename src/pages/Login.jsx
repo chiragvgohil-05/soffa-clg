@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -53,26 +53,21 @@ const Login = () => {
         if (validateForm()) {
             try {
                 const res = await axios.post(`${BASE_URL}/auth/login`, formData);
-                console.log(res.data.message,"fffffffff")
                 toast.success(res.data.message || "Login successful!");
 
                 if (res.data?.data?.token) {
                     localStorage.setItem("token", res.data?.data?.token);
                     localStorage.setItem("role", res.data?.data?.user.role);
+                    onLogin(); // ✅ update App auth state
                 }
 
-                // ✅ Redirect based on role
                 if (res.data?.data?.user?.role === "Admin") {
                     navigate("/admin");
                 } else {
                     navigate("/");
                 }
-
-                console.log("Login success:", res.data);
-
             } catch (err) {
-                console.error("Error during login:", err);
-                    toast.error(err.response.data.message);
+                toast.error(err.response?.data?.message || "Login failed");
             }
         }
     };
