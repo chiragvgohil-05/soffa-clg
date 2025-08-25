@@ -1,6 +1,7 @@
 // src/components/Footer.jsx
 import React from 'react';
 import '../styles/Footer.css';
+import {Link} from "react-router-dom";
 
 const Footer = () => {
     return (
@@ -15,20 +16,19 @@ const Footer = () => {
                     <div className="footer-col">
                         <h4>Quick Links</h4>
                         <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Shop</a></li>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Contact</a></li>
+                            <li><Link to="/">Home</Link></li>
+                            <li><Link to="/shop">Shop</Link></li>
+                            <li><Link to="/contact">Contact</Link></li>
                         </ul>
                     </div>
 
                     <div className="footer-col">
                         <h4>Follow Us</h4>
                         <ul>
-                            <li><a href="#">Facebook</a></li>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">Instagram</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><Link to="/">Facebook</Link></li>
+                            <li><Link to="/">Twitter</Link></li>
+                            <li><Link to="/">Instagram</Link></li>
+                            <li><Link to="/">LinkedIn</Link></li>
                         </ul>
                     </div>
                 </div>

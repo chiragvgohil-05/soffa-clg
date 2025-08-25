@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../styles/AdminProductCard.css';
-import FilterSidebar from "../../components/FilterSidebar";
 import Modal from "../../components/Modal";
 
 const ProductCard = ({

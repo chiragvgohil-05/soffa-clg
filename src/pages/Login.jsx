@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/Auth.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -9,6 +11,8 @@ const Login = () => {
     });
     const [errors, setErrors] = useState({});
     const [rememberMe, setRememberMe] = useState(false);
+    const BASE_URL = 'http://localhost:3000/api';
+    const navigate = useNavigate(); // ✅ hook for redirection
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -44,10 +48,32 @@ const Login = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            console.log('Login attempted with:', formData);
+            try {
+                const res = await axios.post(`${BASE_URL}/auth/login`, formData);
+                console.log(res.data.message,"fffffffff")
+                toast.success(res.data.message || "Login successful!");
+
+                if (res.data?.data?.token) {
+                    localStorage.setItem("token", res.data?.data?.token);
+                    localStorage.setItem("role", res.data?.data?.user.role);
+                }
+
+                // ✅ Redirect based on role
+                if (res.data?.data?.user?.role === "Admin") {
+                    navigate("/admin");
+                } else {
+                    navigate("/");
+                }
+
+                console.log("Login success:", res.data);
+
+            } catch (err) {
+                console.error("Error during login:", err);
+                    toast.error(err.response.data.message);
+            }
         }
     };
 

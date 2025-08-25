@@ -2,20 +2,19 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/Auth.css';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast from 'react-hot-toast';
 
 const Register = () => {
-    const BASE_URL = process.env.REACT_APP_API_URL;
-
+    const BASE_URL = 'http://localhost:3000/api';
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        name: '',
         email: '',
         password: '',
         confirmPassword: ''
     });
+
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
 
@@ -25,6 +24,7 @@ const Register = () => {
             ...prev,
             [name]: value
         }));
+
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -37,8 +37,7 @@ const Register = () => {
         const newErrors = {};
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (!formData.firstName) newErrors.firstName = 'First name is required';
-        if (!formData.lastName) newErrors.lastName = 'Last name is required';
+        if (!formData.name) newErrors.name = 'Name is required';
         if (!formData.email) {
             newErrors.email = 'Email is required';
         } else if (!emailRegex.test(formData.email)) {
@@ -66,40 +65,32 @@ const Register = () => {
         setLoading(true);
 
         try {
-
             const response = await axios.post(
-                `${BASE_URL}/api/auth/register`,
+                `${BASE_URL}/auth/register`,
                 {
-                    first_name: formData.firstName,
-                    last_name: formData.lastName,
+                    name: formData.name,
                     email: formData.email,
                     password: formData.password
                 }
             );
 
-            toast.success(response.data.message || 'Registration successful!', {
-                position: 'top-right',
-                autoClose: 3000
-            });
+            toast.success(response.data.message || 'Registration successful!');
 
             // Reset form
             setFormData({
-                firstName: '',
-                lastName: '',
+                name: '',
                 email: '',
                 password: '',
                 confirmPassword: ''
             });
 
-            // Redirect after 2 seconds
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
 
         } catch (error) {
             toast.error(
-                error.response?.data?.message || 'Something went wrong. Please try again.',
-                { position: 'top-right', autoClose: 3000 }
+                error.response?.data?.message || 'Something went wrong. Please try again.'
             );
         } finally {
             setLoading(false);
@@ -115,33 +106,18 @@ const Register = () => {
                 </div>
 
                 <form className="auth-form" onSubmit={handleSubmit}>
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="firstName" className="form-label">First Name</label>
-                            <input
-                                type="text"
-                                id="firstName"
-                                name="firstName"
-                                value={formData.firstName}
-                                onChange={handleInputChange}
-                                className={`form-input ${errors.firstName ? 'form-input-error' : ''}`}
-                                placeholder="Enter your first name"
-                            />
-                            {errors.firstName && <span className="error-message">{errors.firstName}</span>}
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="lastName" className="form-label">Last Name</label>
-                            <input
-                                type="text"
-                                id="lastName"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleInputChange}
-                                className={`form-input ${errors.lastName ? 'form-input-error' : ''}`}
-                                placeholder="Enter your last name"
-                            />
-                            {errors.lastName && <span className="error-message">{errors.lastName}</span>}
-                        </div>
+                    <div className="form-group">
+                        <label htmlFor="name" className="form-label">Full Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            className={`form-input ${errors.name ? 'form-input-error' : ''}`}
+                            placeholder="Enter your full name"
+                        />
+                        {errors.name && <span className="error-message">{errors.name}</span>}
                     </div>
 
                     <div className="form-group">
@@ -200,9 +176,6 @@ const Register = () => {
                     </p>
                 </div>
             </div>
-
-            {/* Toast Container */}
-            <ToastContainer />
         </div>
     );
 };
