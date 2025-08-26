@@ -8,6 +8,7 @@ import Products from './pages/Products/Products';
 import './styles/admin.css';
 import ProductCreate from "./pages/Products/ProductCreate";
 import ProductEdit from "./pages/Products/ProductEdit";
+import AdminProfilePage from "./pages/AdminProfile";
 
 const AdminLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
@@ -74,6 +75,7 @@ const AdminLayout = () => {
                         <Route path="dashboard" element={<Dashboard />} />
                         {/*<Route path="users" element={<Users />} />*/}
                         <Route path="products" element={<Products />} />
+                        <Route path="admin-profile" element={<AdminProfilePage />} />
                         <Route path="payment" element={<Payment />} />
                         <Route path="products/create" element={<ProductCreate />} />
                         <Route path="products/edit/:id" element={<ProductEdit />} />

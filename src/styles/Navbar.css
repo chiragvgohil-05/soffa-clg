@@ -9,6 +9,10 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.dropdown-wrapper {
+    position: relative;
+}
+
 .navbar-left {
     display: flex;
     align-items: center;
@@ -144,7 +148,13 @@
 }
 
 /* Mobile styles */
+
 @media (max-width: 426px) {
+
+    .dropdown-wrapper .dropdown-menu {
+        left: 0;
+    }
+
     .hamburger {
         display: block;
     }
@@ -230,7 +240,7 @@
     .nav-item.active {
         background-color: #3498db;
         color: #fff;
-         display: block;
+        display: block;
     }
 
     .nav-links li {

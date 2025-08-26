@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Contact from './pages/Contact';
@@ -10,7 +10,9 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminLayout from "./admin/AdminLayout";
 import ProductPage from "./pages/ProductPage";
+import ErrorPage from "./pages/ErrorPage"; // Import the ErrorPage
 import { Toaster } from 'react-hot-toast';
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
     const [auth, setAuth] = useState({
@@ -57,8 +59,11 @@ function App() {
                         <Route path="/shop" element={<Shop />} />
                         <Route path="/contact" element={<Contact />} />
                         <Route path="/cart" element={<Cart />} />
+                        <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/product/:id" element={<ProductPage />} />
                     </Route>
+
+                    <Route path="*" element={<ErrorPage />} />
                 </Routes>
             </Router>
             <Toaster position="top-right" reverseOrder={false} />

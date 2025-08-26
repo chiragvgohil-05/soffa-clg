@@ -3,6 +3,7 @@ import '../styles/Auth.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import {FaEye, FaEyeSlash} from "react-icons/fa";
 
 const Login = ({ onLogin }) => {
     const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const Login = ({ onLogin }) => {
     const [rememberMe, setRememberMe] = useState(false);
     const BASE_URL = 'http://localhost:3000/api';
     const navigate = useNavigate(); // ✅ hook for redirection
+    const [showPassword, setShowPassword] = useState(false); // 👈 toggle state
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -58,7 +60,8 @@ const Login = ({ onLogin }) => {
                 if (res.data?.data?.token) {
                     localStorage.setItem("token", res.data?.data?.token);
                     localStorage.setItem("role", res.data?.data?.user.role);
-                    onLogin(); // ✅ update App auth state
+                    localStorage.setItem("user", JSON.stringify(res.data?.data?.user));
+                    onLogin();
                 }
 
                 if (res.data?.data?.user?.role === "Admin") {
@@ -95,10 +98,10 @@ const Login = ({ onLogin }) => {
                         {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group password-field">
                         <label htmlFor="password" className="form-label">Password</label>
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             id="password"
                             name="password"
                             value={formData.password}
@@ -106,6 +109,12 @@ const Login = ({ onLogin }) => {
                             className={`form-input ${errors.password ? 'form-input-error' : ''}`}
                             placeholder="Enter your password"
                         />
+                        <span
+                            className="toggle-password"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </span>
                         {errors.password && <span className="error-message">{errors.password}</span>}
                     </div>
 
