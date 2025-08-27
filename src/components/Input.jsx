@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/Input.css';
+import {isDisabled} from "@testing-library/user-event/dist/utils";
 
 const Input = ({
                    label,
@@ -12,6 +13,7 @@ const Input = ({
                    required = false,
                    name,
                    labelClassName = "", // ✅ added
+                   disabled,
                    ...props
                }) => {
     return (
@@ -32,6 +34,7 @@ const Input = ({
                 onChange={onChange}
                 className={`input ${className} ${error ? 'input-error' : ''}`}
                 {...props}
+                disabled={disabled}
             />
 
             {error && <span className="input-error-message">{error}</span>}

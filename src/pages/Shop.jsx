@@ -82,8 +82,8 @@ const Shop = () => {
         setSearchTerm('');
     };
 
-    const categories = [...new Set(products.map(p => p.category))];
-    const brands = [...new Set(products.map(p => p.brand))];
+    const categories = [...new Set(products?.map(p => p.category))];
+    const brands = [...new Set(products?.map(p => p.brand))];
 
     const filteredProducts = useMemo(() => {
         return products.filter(product => {
@@ -144,7 +144,7 @@ const Shop = () => {
 
                 <div style={{ flex: 1 }}>
                     <div className="shop-product-grid">
-                        {filteredProducts.map(product => (
+                        {filteredProducts?.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>

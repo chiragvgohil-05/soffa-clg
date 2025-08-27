@@ -3,15 +3,16 @@ import '../styles/AdminProductCard.css';
 import Modal from "../../components/Modal";
 
 const ProductCard = ({
-                         id,
+                         _id,
                          name,
+                         brand,
+                         category,
+                         description,
                          price,
                          originalPrice,
-                         rating,
-                         reviewCount,
-                         imageUrl,
-                         isNew,
                          discount,
+                         images,
+                         isNew,
                          inStock,
                          onEdit,
                          onDelete
@@ -19,15 +20,20 @@ const ProductCard = ({
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const handleConfirmDelete = () => {
-        onDelete(id);
+        onDelete(_id);
         setIsDeleteModalOpen(false);
     };
 
     return (
         <>
             <div className="product-card admin">
+                {/* Image */}
                 <div className="product-image-container">
-                    <img src={imageUrl || 'https://via.placeholder.com/300'} alt={name} className="product-image" />
+                    <img
+                        src={images?.[0] || 'https://via.placeholder.com/300'}
+                        alt={name}
+                        className="product-image"
+                    />
                     <div className="product-badges">
                         {isNew && <span className="badge new">NEW</span>}
                         {discount > 0 && <span className="badge discount">{discount}% OFF</span>}
@@ -35,8 +41,12 @@ const ProductCard = ({
                     </div>
                 </div>
 
+                {/* Info */}
                 <div className="product-info">
                     <h3 className="product-name">{name}</h3>
+                    <p className="product-brand">{brand}</p>
+                    <p className="product-category">{category}</p>
+                    <p className="product-description">{description}</p>
 
                     <div className="product-pricing">
                         <span className="current-price">${price.toFixed(2)}</span>
@@ -45,15 +55,8 @@ const ProductCard = ({
                         )}
                     </div>
 
-                    <div className="product-ratings">
-            <span className="rating-stars">
-              {'★'.repeat(Math.floor(rating))}{'☆'.repeat(5 - Math.floor(rating))}
-            </span>
-                        <span className="review-count">({reviewCount})</span>
-                    </div>
-
                     <div className="admin-product-actions">
-                        <button className="edit-btn" onClick={() => onEdit(id)}>Edit</button>
+                        <button className="edit-btn" onClick={() => onEdit(_id)}>Edit</button>
                         <button className="delete-btn" onClick={() => setIsDeleteModalOpen(true)}>Delete</button>
                     </div>
                 </div>

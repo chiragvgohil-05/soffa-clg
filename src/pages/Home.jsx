@@ -147,7 +147,7 @@ function Home() {
                 gap: '20px',
                 justifyContent: 'center',
             }}>
-                {products.map((product) => (
+                {products?.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>
@@ -176,7 +176,7 @@ function Home() {
                 gap: '20px',
                 justifyContent: 'center',
             }}>
-                {products.map((product) => (
+                {products?.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>

@@ -7,6 +7,8 @@ import Select from "../../../components/Select";
 import ImagePicker from "../../../components/ImagePicker";
 import TextArea from "../../../components/TextArea";
 import { useNavigate } from 'react-router-dom';
+import request from "../../../apiClient";
+import toast from 'react-hot-toast';
 
 const ProductCreate = () => {
     const [formData, setFormData] = useState({
@@ -25,14 +27,34 @@ const ProductCreate = () => {
 
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [description, setDescription] = useState("");
 
+    const validateDescription = (text) => {
+        if (text.includes("badword")) {
+            return "Inappropriate word not allowed!";
+        }
+        return true;
+    };
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+        setFormData(prev => {
+            const updated = {
+                ...prev,
+                [name]: type === 'checkbox' ? checked : value
+            };
+
+            // Auto-calc price when originalPrice or discount changes
+            if (name === 'originalPrice' || name === 'discount') {
+                const original = parseFloat(updated.originalPrice) || 0;
+                const discount = parseFloat(updated.discount) || 0;
+                const discountedPrice = original - (original * discount / 100);
+
+                updated.price = discountedPrice > 0 ? discountedPrice.toFixed(2) : '';
+            }
+
+            return updated;
+        });
 
         // Clear error when user starts typing
         if (errors[name]) {
@@ -86,56 +108,49 @@ const ProductCreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
         setIsSubmitting(true);
 
-        // Simulate API call
         try {
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // ✅ Use FormData for text + files
+            const form = new FormData();
 
-            // Process the form data
-            const productData = {
-                id: Date.now(),
-                name: formData.name.trim(),
-                price: parseFloat(formData.price),
-                originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
-                imageUrl: formData.imageUrl || null,
-                isNew: formData.isNew,
-                discount: parseFloat(formData.discount),
-                inStock: formData.inStock,
-                brand: formData.brand.trim(),
-                category: formData.category.trim(),
-                description: formData.description.trim()
-            };
+            form.append("name", formData.name.trim());
+            form.append("price", parseFloat(formData.price));
+            form.append("originalPrice", formData.originalPrice ? parseFloat(formData.originalPrice) : "");
+            form.append("isNew", formData.isNew);
+            form.append("discount", parseFloat(formData.discount));
+            form.append("inStock", formData.inStock);
+            form.append("brand", formData.brand.trim());
+            form.append("category", formData.category.trim());
+            form.append("description", description.trim());
 
-            console.log('Product added:', productData);
-
-            // Reset form after success
-            setTimeout(() => {
-                setFormData({
-                    name: '',
-                    price: '',
-                    originalPrice: '',
-                    imageUrl: '',
-                    isNew: false,
-                    discount: '0',
-                    inStock: true,
-                    brand: '',
-                    category: '',
-                    description: ''
+            // ✅ Append all images
+            if (formData.images?.length) {
+                formData.images.forEach((file) => {
+                    form.append("images", file); // ✅
                 });
-            }, 2000);
+            }
+
+            // ✅ Send request with multipart/form-data
+            await request.post("/products", form, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            toast.success("Product created successfully!");
+            resetForm();
+            navigate("/admin/products");
 
         } catch (error) {
-            console.error('Error adding product:', error);
+            console.error("Error creating product:", error);
+            toast.error(error.response?.data?.message || "Failed to create product");
         } finally {
             setIsSubmitting(false);
         }
     };
-
     const resetForm = () => {
         setFormData({
             name: '',
@@ -147,13 +162,16 @@ const ProductCreate = () => {
             inStock: true,
             brand: '',
             category: '',
-            description: ''
         });
+        setDescription('')
         setErrors({});
     };
 
     const handleImagesChange = (images) => {
-        console.log('Selected images:', images);
+        setFormData((prev) => ({
+            ...prev,
+            images: images.map(img => img.file) // only keep File objects
+        }));
     };
 
     return (
@@ -230,10 +248,10 @@ const ProductCreate = () => {
                                             name="price"
                                             type="number"
                                             value={formData.price}
-                                            onChange={handleChange}
+                                            readOnly
                                             placeholder="0.00"
-                                            required
                                             error={errors.price}
+                                            disabled="disabled"
                                         />
                                     </div>
                                 </div>
@@ -271,12 +289,15 @@ const ProductCreate = () => {
                                     {/* Description */}
                                     <div className="product-form-full-width">
                                         <TextArea
-                                            label="Description"
-                                            name="description"
-                                            value={formData.description}
-                                            onChange={handleChange}
-                                            placeholder="Brief product description"
-                                            rows={4}
+                                            label="Product Description"
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                            placeholder="Enter product details..."
+                                            maxLength={200}
+                                            minLength={10}
+                                            required={true}
+                                            validation={validateDescription}
+                                            errorMessage="" // Can also pass server-side error here
                                         />
                                     </div>
                                 </div>
