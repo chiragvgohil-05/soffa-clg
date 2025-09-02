@@ -134,7 +134,7 @@ const ImagePicker = ({
                     accept={acceptedFormats.join(',')}
                     multiple={multiple}
                 />
-                <button className="image-picker-button">Select Images</button>
+                <div className="image-picker-button">Select Images</div>
                 <p>or drag and drop files here</p>
             </div>
 

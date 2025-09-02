@@ -12,12 +12,15 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
+            setLoading(true);
             const res = await apiStore.get("/products");
             console.log(res.data.data);
             setProducts(res.data.data);
         } catch (err) {
             console.error(err);
-            toast.error("Failed to load profile", { id: "profile-toast" });
+            toast.error("Failed to load products", { id: "products-toast" });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -31,19 +34,33 @@ const Products = () => {
 
     const handleDelete = async (productId) => {
         try {
-            await fetch(`http://localhost:3000/api/products/${productId}`, {
-                method: "DELETE",
-            });
-            // remove from state
-            setProducts(prev => prev.filter(p => p.id !== productId));
+            // Use the same apiStore instance for consistency
+            await apiStore.delete(`/products/${productId}`);
+
+            // Remove from state - use _id instead of id
+            setProducts(prev => prev.filter(p => p._id !== productId));
+
+            toast.success("Product deleted successfully");
         } catch (error) {
             console.error("Error deleting product:", error);
+            toast.error("Failed to delete product");
         }
     };
 
     const handleAddProduct = () => {
         navigate('/admin/products/create');
     };
+
+    if (loading) {
+        return (
+            <div className="admin-content products">
+                <div className="loading-container">
+                    <div className="loading-spinner"></div>
+                    <p>Loading products...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -53,20 +70,29 @@ const Products = () => {
                     Add Product
                 </button>
             </div>
-        <div className="admin-content products">
-            <div className="products-grid-container">
-                <div className="products-grid">
-                    {products.map(product => (
-                        <ProductCard
-                            key={product.id}
-                            {...product}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
-                        />
-                    ))}
+            <div className="admin-content products">
+                <div className="products-grid-container">
+                    {products.length === 0 ? (
+                        <div className="empty-state">
+                            <p>No products found.</p>
+                            <button className="add-product-button" onClick={handleAddProduct}>
+                                Add Your First Product
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="products-grid">
+                            {products.map(product => (
+                                <ProductCard
+                                    key={product._id}
+                                    {...product}
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>
         </>
     );
 };
