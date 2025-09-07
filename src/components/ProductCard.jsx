@@ -9,14 +9,11 @@ const ProductCard = ({ product }) => {
     const navigate = useNavigate();
 
     const {
-        id,
+        _id,
         name,
         originalPrice,
         discount = 0,
-        rating = 0,
-        reviewCount = 0,
-        imageUrl,
-        isNew = false,
+        images,
         inStock = true,
         brand = 'Unknown',
         category = 'General',
@@ -27,7 +24,7 @@ const ProductCard = ({ product }) => {
 
     const handleAddToCart = () => {
         if (!inStock) return;
-        console.log(`Added ${id} to cart`);
+        console.log(`Added ${_id} to cart`);
     };
 
     const toggleWishlist = () => {
@@ -42,7 +39,7 @@ const ProductCard = ({ product }) => {
     };
 
     const redirectProductDetail = () => {
-        navigate(`/product/${id}`);
+        navigate(`/product/${_id}`);
     };
 
     return (
@@ -50,35 +47,20 @@ const ProductCard = ({ product }) => {
             className={`product-card ${!inStock ? 'out-of-stock' : ''}`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={()=>redirectProductDetail()}
+            style={{cursor: 'pointer'}}
         >
             <div className="product-image-container">
-                <img src={imageUrl} alt={name} className="product-image" />
+                <img src={images?.[0]} alt={name} className="product-image" />
 
                 {!inStock && <span className="product-badge stock">Out of Stock</span>}
-                {isNew && inStock && <span className="product-badge new">New</span>}
                 {discount > 0 && inStock && (
                     <span className="product-badge discount">-{discount}%</span>
                 )}
-
-                <div className={`product-actions ${isHovered ? 'visible' : ''}`}>
-                    <button className="action-btn" onClick={toggleWishlist} disabled={!inStock}>
-                        <FaHeart className={isWishlisted ? 'wishlisted' : ''} />
-                    </button>
-                    <button className="action-btn" onClick={handleQuickView} disabled={!inStock}>
-                        <FaEye />
-                    </button>
-                </div>
             </div>
 
             <div className="product-info">
-                <div className="product-rating">
-                    {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} className={i < rating ? 'filled' : ''} />
-                    ))}
-                    <span>({reviewCount})</span>
-                </div>
-
-                <h3 className="product-name " onClick={()=>redirectProductDetail()}>{name}</h3>
+                <h3 className="product-name " >{name}</h3>
 
                 <div className="product-meta">
                     <p><strong>Brand:</strong> {brand}</p>

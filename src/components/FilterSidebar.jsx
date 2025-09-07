@@ -69,47 +69,6 @@ const FilterSidebar = ({
                 />
             </div>
 
-            {/* Price Range */}
-            <div className="filter-section">
-                <label className="filter-label">Price Range</label>
-                <div className="price-range-container">
-                    <div className="price-display">
-                        <span>${filters.priceRange[0]}</span>
-                        <span>to</span>
-                        <span>${filters.priceRange[1]}</span>
-                    </div>
-                    <div className="slider-container">
-                        <input
-                            type="range"
-                            min="0"
-                            max="2000"
-                            value={filters.priceRange[0]}
-                            onChange={(e) => onFilterChange('priceRange', [parseInt(e.target.value), filters.priceRange[1]])}
-                            className="range-input"
-                        />
-                        <input
-                            type="range"
-                            min="0"
-                            max="2000"
-                            value={filters.priceRange[1]}
-                            onChange={(e) => onFilterChange('priceRange', [filters.priceRange[0], parseInt(e.target.value)])}
-                            className="range-input"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Rating */}
-            <div className="filter-section">
-                <label className="filter-label">Minimum Rating</label>
-                <Select
-                    options={[3, 4, 4.5]}
-                    value={filters.minRating}
-                    onChange={(e) => onFilterChange('minRating', parseFloat(e.target.value))}
-                    placeholder="Any Rating"
-                />
-            </div>
-
 
             {/* Stock */}
             <div className="filter-section">

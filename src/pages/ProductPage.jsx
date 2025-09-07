@@ -1,37 +1,36 @@
-import React from "react";
+// src/pages/ProductDetailPage.jsx
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import apiClient from "../apiClient";
 import ProductDetail from "../components/ProductDetail";
-import soffa from '../assets/soffa.jpg';
-import chair from '../assets/chair.jpg';
 
+const ProductDetailPage = () => {
+    const { id } = useParams(); // get product id from URL
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-const ProductPage = () => {
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const res = await apiClient.get(`/products/${id}`);
+                setProduct(res.data.data); // backend sends { data: product }
+            } catch (err) {
+                console.error("Error fetching product:", err);
+                setError("Failed to load product details");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const product = {
-        id: 1,
-        name: "Luxury Toy Car",
-        originalPrice: 2000,
-        discount: 20,
-        rating: 4.5,
-        reviewCount: 120,
-        imageUrl: [
-            chair,
-            soffa,
-        ],
-        isNew: true,
-        inStock: true,
-        brand: "SpeedX",
-        category: "Toys",
-        description: "A premium toy car with realistic design and durable build."
-    };
+        fetchProduct();
+    }, [id]);
 
+    if (loading) return <p>Loading product...</p>;
+    if (error) return <p>{error}</p>;
+    if (!product) return <p>No product found</p>;
 
-    return (
-        <>
-            <div>
-                <ProductDetail product={product} />
-            </div>
-        </>
-    );
+    return <ProductDetail product={product} />;
 };
 
-export default ProductPage;
+export default ProductDetailPage;
