@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import "../styles/ProductDetail.css";
+import apiClient from "../apiClient";
+import toast from "react-hot-toast";
 
 const ProductDetail = ({ product }) => {
     const [selectedImage, setSelectedImage] = useState(
         product?.images?.[0] || ""
     );
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
 
     if (!product) return <p>No product data available</p>;
 
     const {
+        _id,
         name,
         originalPrice,
         discount = 0,
@@ -24,6 +28,42 @@ const ProductDetail = ({ product }) => {
     } = product;
 
     const finalPrice = price || (originalPrice - (originalPrice * discount) / 100);
+
+    // ✅ Handle Add to Cart API
+    const handleAddToCart = async () => {
+        if (!inStock) return;
+
+        setIsAddingToCart(true);
+        try {
+            const response = await apiClient.post("/cart/add", {
+                productId: _id,
+                quantity: 1,
+            });
+
+            toast.success(response?.data?.message || "Added to cart!", {
+                position: "top-right",
+                autoClose: 2000,
+            });
+
+            console.log("Added to cart:", response.data);
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+
+            if (error.response?.status === 401) {
+                toast.error("Please login to add items to cart", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            } else {
+                toast.error("Failed to add item to cart", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            }
+        } finally {
+            setIsAddingToCart(false);
+        }
+    };
 
     return (
         <div className="pdp">
@@ -71,9 +111,18 @@ const ProductDetail = ({ product }) => {
 
                 <p className="pdp__desc">{description}</p>
 
-                <button className="pdp__btn" disabled={!inStock}>
-                    {inStock ? "Add to Cart" : "Unavailable"}
+                <button
+                    className="pdp__btn"
+                    onClick={handleAddToCart}
+                    disabled={!inStock || isAddingToCart}
+                >
+                    {isAddingToCart
+                        ? "Adding..."
+                        : inStock
+                            ? "Add to Cart"
+                            : "Unavailable"}
                 </button>
+
                 <button className="pdp_checkout_btn">Check Out</button>
             </div>
         </div>

@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { FaShoppingCart, FaStar, FaHeart, FaEye } from 'react-icons/fa';
 import '../styles/ProductCard.css';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../apiClient'; // Import your apiClient
+import  toast  from 'react-hot-toast'; // Optional: for notifications
 
 const ProductCard = ({ product }) => {
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
     const navigate = useNavigate();
 
     const {
@@ -22,9 +25,46 @@ const ProductCard = ({ product }) => {
 
     const price = originalPrice - (originalPrice * discount / 100);
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async (e) => {
+        e.stopPropagation(); // Prevent navigation to product detail
+
         if (!inStock) return;
-        console.log(`Added ${_id} to cart`);
+
+        setIsAddingToCart(true);
+        try {
+            // Make API call to add product to cart
+            const response = await apiClient.post('/cart/add', {
+                productId: _id,
+                quantity: 1
+            });
+
+            // Show success message
+            toast.success(response?.data?.message, {
+                position: "top-right",
+                autoClose: 2000,
+            });
+
+            console.log('Added to cart:', response.data);
+
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+
+            if (error.response?.status === 401) {
+                toast.error('Please login to add items to cart', {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                // Optionally redirect to login
+                // navigate('/login');
+            } else {
+                toast.error('Failed to add item to cart', {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            }
+        } finally {
+            setIsAddingToCart(false);
+        }
     };
 
     const toggleWishlist = () => {
@@ -77,12 +117,12 @@ const ProductCard = ({ product }) => {
                 </div>
 
                 <button
-                    className={`add-to-cart-btn ${!inStock ? 'disabled' : ''}`}
+                    className={`add-to-cart-btn ${!inStock ? 'disabled' : ''} ${isAddingToCart ? 'loading' : ''}`}
                     onClick={handleAddToCart}
-                    disabled={!inStock}
+                    disabled={!inStock || isAddingToCart}
                 >
                     <FaShoppingCart />
-                    {inStock ? 'Add to Cart' : 'Out of Stock'}
+                    {isAddingToCart ? 'Adding...' : inStock ? 'Add to Cart' : 'Out of Stock'}
                 </button>
             </div>
         </div>
