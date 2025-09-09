@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { FaShoppingCart, FaStar, FaHeart, FaEye } from 'react-icons/fa';
 import '../styles/ProductCard.css';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../apiClient'; // Import your apiClient
-import  toast  from 'react-hot-toast'; // Optional: for notifications
+import apiClient from '../apiClient';
+import toast from 'react-hot-toast';
+import { useCart } from "../context/CartContext";
 
 const ProductCard = ({ product }) => {
     const [isWishlisted, setIsWishlisted] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [isAddingToCart, setIsAddingToCart] = useState(false);
     const navigate = useNavigate();
+    const { fetchCart } = useCart();
 
     const {
         _id,
@@ -45,6 +47,9 @@ const ProductCard = ({ product }) => {
             });
 
             console.log('Added to cart:', response.data);
+
+            // Refresh the cart data after successful addition
+            fetchCart();
 
         } catch (error) {
             console.error('Error adding to cart:', error);
@@ -87,8 +92,8 @@ const ProductCard = ({ product }) => {
             className={`product-card ${!inStock ? 'out-of-stock' : ''}`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onClick={()=>redirectProductDetail()}
-            style={{cursor: 'pointer'}}
+            onClick={() => redirectProductDetail()}
+            style={{ cursor: 'pointer' }}
         >
             <div className="product-image-container">
                 <img src={images?.[0]} alt={name} className="product-image" />
@@ -100,7 +105,7 @@ const ProductCard = ({ product }) => {
             </div>
 
             <div className="product-info">
-                <h3 className="product-name " >{name}</h3>
+                <h3 className="product-name ">{name}</h3>
 
                 <div className="product-meta">
                     <p><strong>Brand:</strong> {brand}</p>

@@ -20,28 +20,22 @@ const Dashboard = () => {
     const stats = [
         {
             title: "Total Users",
-            value: dashboardStats ? dashboardStats.totalUsers : 0,
+            value: dashboardStats ? dashboardStats?.totalUsers : 0,
             icon: <FaUsers />,
             color: "#4f46e5",
         },
         {
             title: "Products Created",
-            value: dashboardStats ? dashboardStats.totalProducts : 0,
+            value: dashboardStats ? dashboardStats?.totalProducts : 0,
             icon: <FaBoxOpen />,
             color: "#10b981",
         },
         {
             title: "Total Payments",
-            value: "₹ 1,25,000", // keep static until backend is ready
+            value: dashboardStats ? dashboardStats?.totalRevenue : 0,
             icon: <FaMoneyBillWave />,
             color: "#f59e0b",
-        },
-        {
-            title: "Active Orders",
-            value: 32, // later connect with orders API
-            icon: <FaShoppingCart />,
-            color: "#ef4444",
-        },
+        }
     ];
 
     // ✅ Fetch users from backend

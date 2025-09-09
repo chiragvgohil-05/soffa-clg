@@ -1,171 +1,260 @@
-// src/components/Cart.jsx
-import React, { useState } from 'react';
-import '../styles/Cart.css';
-import headphones from '../assets/soffa.jpg';
-import smartwatch from '../assets/soffa.jpg';
+import React, { useEffect, useState } from "react";
+import "../styles/Cart.css";
 import BannerSlider from "../components/BannerSlider";
 import cartBanner from "../assets/soffa.jpg";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import apiClient from "../apiClient";
+import toast from "react-hot-toast";
+
+// Load Razorpay script dynamically
+const loadRazorpay = () => {
+    return new Promise((resolve) => {
+        if (window.Razorpay) {
+            resolve(true);
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+    });
+};
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: 'Premium Wireless Headphones',
-            price: 299.99,
-            quantity: 1,
-            image: headphones,
-            color: 'Black',
-            delivery: 'Free shipping'
-        },
-        {
-            id: 2,
-            name: 'Smart Watch Pro',
-            price: 199.99,
-            quantity: 2,
-            image: smartwatch,
-            color: 'Silver',
-            delivery: 'Express shipping'
-        }
-    ]);
+    const { cart, fetchCart, loading, updateQuantity, removeFromCart } = useCart();
+    const [processing, setProcessing] = useState(false);
 
     const slides = [
         {
             id: 1,
             image: cartBanner,
-            title: 'Your Shopping Journey',
-            subtitle: 'Review & checkout your favorite items',
+            title: "Your Shopping Journey",
+            subtitle: "Review & checkout your favorite items",
         },
     ];
 
-    const updateQuantity = (id, delta) => {
-        setCartItems(prev =>
-            prev.map(item =>
-                item.id === id
-                    ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-                    : item
-            )
-        );
+    useEffect(() => {
+        if (cart === null && !loading) {
+            fetchCart();
+        }
+    }, [cart, loading, fetchCart]);
+
+    // Checkout handler
+    const handleCheckout = async () => {
+        if (!cart || cart.items.length === 0) return;
+
+        setProcessing(true);
+
+        try {
+            // Load Razorpay script
+            const isLoaded = await loadRazorpay();
+            if (!isLoaded) {
+                toast.error("Failed to load payment gateway");
+                setProcessing(false);
+                return;
+            }
+
+            // Create order on backend
+            const response = await apiClient.post("/cart/create-order");
+
+            // Extract backend response data
+            const backendData = response.data.data || response.data;
+            const orderData = backendData.order;
+            const orderId = backendData.orderId;
+
+            if (!orderData || !orderData.id) {
+                throw new Error("Invalid order response from server");
+            }
+
+            // Razorpay checkout options
+            const options = {
+                key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+                amount: orderData.amount || Math.round((cart.totalPrice + (cart.totalPrice > 1000 ? 0 : 99)) * 100),
+                currency: orderData.currency || "INR",
+                name: "Your Store Name",
+                description: "Order Payment",
+                image: "/logo.png",
+                order_id: orderData.id,
+                handler: async function (response) {
+                    try {
+                        await apiClient.post("/cart/verify-payment", {
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            orderId: orderId,
+                        });
+
+                        toast.success("Payment successful! Order placed.");
+                        fetchCart();
+                        setProcessing(false);
+                    } catch (error) {
+                        console.error("Payment verification failed:", error);
+                        toast.error(error.response?.data?.message || "Payment verification failed");
+                        setProcessing(false);
+                    }
+                },
+                prefill: {
+                    name: "Customer",
+                    email: "customer@example.com",
+                    contact: "9999999999",
+                },
+                notes: {
+                    orderId: orderId,
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+                modal: {
+                    ondismiss: function () {
+                        toast.error("Payment cancelled");
+                        setProcessing(false);
+                    },
+                },
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+
+            rzp.on("payment.failed", function (response) {
+                console.error("Payment failed:", response.error);
+                toast.error(`Payment failed: ${response.error.description}`);
+                setProcessing(false);
+            });
+        } catch (error) {
+            console.error("Checkout error:", error);
+
+            if (error.response?.status === 404) {
+                toast.error("Checkout service unavailable. Please try again later.");
+            } else if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else if (error.message) {
+                toast.error(error.message);
+            } else {
+                toast.error("Failed to initiate checkout");
+            }
+
+            setProcessing(false);
+        }
     };
 
-    const removeItem = (id) => {
-        setCartItems(prev => prev.filter(item => item.id !== id));
-    };
+    if (loading) return <div className="cart-container">Loading cart...</div>;
 
-    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = subtotal > 100 ? 0 : 9.99;
-    const grandTotal = subtotal + shipping;
-
-    return (
-        <>
-            <BannerSlider
-                slides={slides}
-                height="400px"
-                autoPlay={false}
-                showArrows={true}
-                showDots={true}
-                dotActiveColor="#FF6B6B"
-                textColor="#fff"
-                overlayColor="rgba(0,0,0,0.3)"
-            />
-
-            <div className="cart-container">
-                <div className="cart-header">
-                    <h2>Your Shopping Cart</h2>
-                    <span className="item-count">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</span>
-                </div>
-
-                {cartItems.length === 0 ? (
+    if (!cart || cart.items.length === 0) {
+        return (
+            <>
+                <BannerSlider slides={slides} height="400px" autoPlay={false} showArrows showDots />
+                <div className="cart-container">
                     <div className="empty-cart">
                         <div className="empty-cart-icon">🛒</div>
                         <h3>Your cart feels lonely</h3>
                         <p>Looks like you haven't added anything to your cart yet</p>
-                        <NavLink to="/shop" className="continue-shopping">Continue Shopping</NavLink>
+                        <NavLink to="/shop" className="continue-shopping">
+                            Continue Shopping
+                        </NavLink>
                     </div>
-                ) : (
-                    <div className="cart-body">
-                        <div className="cart-left">
-                            <div className="cart-list-header">
-                                <span>Product</span>
-                                <span>Price</span>
-                                <span>Quantity</span>
-                                <span>Total</span>
-                                <span>Action</span>
-                            </div>
-                            <ul className="cart-list">
-                                {cartItems.map(item => (
-                                    <li key={item.id} className="cart-item">
-                                        <div className="cart-product-info">
-                                            <img src={item.image} alt={item.name} className="cart-img"/>
-                                            <div className="product-details">
-                                                <h4>{item.name}</h4>
-                                                <div className="product-meta">
-                                                    <span>Color: {item.color}</span>
-                                                    <span>{item.delivery}</span>
-                                                </div>
+                </div>
+            </>
+        );
+    }
+
+    const shipping = cart.totalPrice > 1000 ? 0 : 99;
+    const totalAmount = cart.totalPrice + shipping;
+
+    return (
+        <>
+            <BannerSlider slides={slides} height="400px" autoPlay={false} showArrows showDots />
+            <div className="cart-container">
+                <div className="cart-header">
+                    <h2>Your Shopping Cart</h2>
+                    <span className="item-count">
+                        {cart.items.length} {cart.items.length === 1 ? "item" : "items"}
+                    </span>
+                </div>
+
+                <div className="cart-body">
+                    <div className="cart-left">
+                        <div className="cart-list-header">
+                            <span>Product</span>
+                            <span>Price</span>
+                            <span>Quantity</span>
+                            <span>Total</span>
+                            <span>Action</span>
+                        </div>
+
+                        <ul className="cart-list">
+                            {cart.items.map((item) => (
+                                <li key={item._id} className="cart-item">
+                                    <div className="cart-product-info">
+                                        <img
+                                            src={item.product.images?.[0] || cartBanner}
+                                            alt={item.product.name}
+                                            className="cart-img"
+                                        />
+                                        <div className="product-details">
+                                            <h4>{item.product.name}</h4>
+                                            <div className="product-meta">
+                                                <span>Brand: {item.product.brand}</span>
+                                                <span>Category: {item.product.category}</span>
                                             </div>
                                         </div>
-                                        <div className="product-price">${item.price.toFixed(2)}</div>
-                                        <div className="quantity-controls">
-                                            <button
-                                                onClick={() => updateQuantity(item.id, -1)}
-                                                disabled={item.quantity <= 1}
-                                            >
-                                                −
-                                            </button>
-                                            <span>{item.quantity}</span>
-                                            <button onClick={() => updateQuantity(item.id, 1)}>+</button>
-                                        </div>
-                                        <div className="product-total">${(item.price * item.quantity).toFixed(2)}</div>
-                                        <div className="product-action">
-                                            <button
-                                                className="remove-btn"
-                                                onClick={() => removeItem(item.id)}
-                                                aria-label="Remove item"
-                                            >
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                    <path d="M18 6L6 18M6 6l12 12" strokeWidth="2" strokeLinecap="round"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="cart-right">
-                            <div className="order-summary">
-                                <h3>Order Summary</h3>
-                                <div className="summary-row">
-                                    <span>Subtotal</span>
-                                    <span>${subtotal.toFixed(2)}</span>
-                                </div>
-                                <div className="summary-row">
-                                    <span>Shipping</span>
-                                    <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
-                                </div>
-                                <div className="summary-divider"></div>
-                                <div className="summary-row grand-total">
-                                    <span>Total</span>
-                                    <span>${grandTotal.toFixed(2)}</span>
-                                </div>
-                                <button className="checkout-btn">
-                                    Proceed to Checkout
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="2" strokeLinecap="round"/>
-                                    </svg>
-                                </button>
-                                <div className="payment-methods">
-                                    <span>We accept:</span>
-                                    <div className="payment-icons">
-                                        <span>💳</span>
-                                        <span>📱</span>
-                                        <span>💰</span>
                                     </div>
-                                </div>
+
+                                    <div className="product-price">₹{item.price}</div>
+
+                                    <div className="quantity-controls">
+                                        <button type="button" onClick={() => updateQuantity(item.product._id, -1)}>
+                                            −
+                                        </button>
+                                        <span>{item.quantity}</span>
+                                        <button type="button" onClick={() => updateQuantity(item.product._id, 1)}>
+                                            +
+                                        </button>
+                                    </div>
+
+                                    <div className="product-total">₹{item.price * item.quantity}</div>
+
+                                    <div className="product-action">
+                                        <button
+                                            type="button"
+                                            className="remove-btn"
+                                            onClick={() => removeFromCart(item.product._id)}
+                                            aria-label="Remove item"
+                                        >
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <path d="M18 6L6 18M6 6l12 12" strokeWidth="2" strokeLinecap="round" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="cart-right">
+                        <div className="order-summary">
+                            <h3>Order Summary</h3>
+                            <div className="summary-row">
+                                <span>Subtotal</span>
+                                <span>₹{cart.totalPrice}</span>
                             </div>
+                            <div className="summary-row">
+                                <span>Shipping</span>
+                                <span>{shipping === 0 ? "Free" : `₹${shipping}`}</span>
+                            </div>
+                            <div className="summary-divider" />
+                            <div className="summary-row grand-total">
+                                <span>Total</span>
+                                <span>₹{totalAmount}</span>
+                            </div>
+                            <button className="checkout-btn" onClick={handleCheckout} disabled={processing}>
+                                {processing ? "Processing..." : "Proceed to Checkout"}
+                            </button>
                         </div>
                     </div>
-                )}
+                </div>
             </div>
         </>
     );

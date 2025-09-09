@@ -4,6 +4,7 @@ import { FaShoppingCart, FaUser, FaBars, FaTimes, FaSearch } from 'react-icons/f
 import '../styles/Navbar.css';
 import apiStore from "../apiClient";
 import toast from "react-hot-toast";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +12,7 @@ const Navbar = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [user   , setUser] = useState(null);
+    const { cart } = useCart();
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -135,8 +137,14 @@ const Navbar = () => {
                                         <FaUser className="icon" title="Register" />
                                     </NavLink>
                                 )}
+                                {/*<NavLink to="/cart" className="icon-link" onClick={closeMenu}>*/}
+                                {/*    <FaShoppingCart className="icon" title="Cart" />*/}
+                                {/*</NavLink>*/}
                                 <NavLink to="/cart" className="icon-link" onClick={closeMenu}>
                                     <FaShoppingCart className="icon" title="Cart" />
+                                    {cart?.items?.length > 0 && (
+                                        <span className="cart-count">{cart?.items?.length}</span>
+                                    )}
                                 </NavLink>
                             </li>
                         </>
@@ -186,7 +194,9 @@ const Navbar = () => {
 
                         <NavLink to="/cart" className="icon-link">
                             <FaShoppingCart className="icon" title="Cart" />
-                            <span className="cart-count">0</span>
+                            {cart?.items?.length > 0 && (
+                                <span className="cart-count">{cart?.items?.length}</span>
+                            )}
                         </NavLink>
                     </div>
                 )}

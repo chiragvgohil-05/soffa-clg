@@ -4,12 +4,14 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import {FaEye, FaEyeSlash} from "react-icons/fa";
+import {useCart} from "../context/CartContext";
 
 const Login = ({ onLogin }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
+    const { fetchCart } = useCart();
     const [errors, setErrors] = useState({});
     const [rememberMe, setRememberMe] = useState(false);
     const BASE_URL = 'http://localhost:3000/api';
@@ -63,6 +65,7 @@ const Login = ({ onLogin }) => {
                     localStorage.setItem("user", JSON.stringify(res.data?.data?.user));
                     onLogin();
                 }
+                fetchCart();
 
                 if (res.data?.data?.user?.role === "Admin") {
                     navigate("/admin");

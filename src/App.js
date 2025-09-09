@@ -13,6 +13,7 @@ import ProductPage from "./pages/ProductPage";
 import ErrorPage from "./pages/ErrorPage"; // Import the ErrorPage
 import { Toaster } from 'react-hot-toast';
 import ProfilePage from "./pages/ProfilePage";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
     const [auth, setAuth] = useState({
@@ -29,7 +30,7 @@ function App() {
     };
 
     return (
-        <>
+        <CartProvider>
             <Router>
                 <Routes>
                     {/* Public routes */}
@@ -67,7 +68,7 @@ function App() {
                 </Routes>
             </Router>
             <Toaster position="top-right" reverseOrder={false} />
-        </>
+        </CartProvider>
     );
 }
 

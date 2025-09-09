@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import apiClient from '../../apiClient'; // your configured Axios instance
 import '../styles/Payment.css';
 import {
     FaCheckCircle,
@@ -10,14 +11,37 @@ import {
     FaSearch
 } from 'react-icons/fa';
 
-const payments = [
-    { id: 'PMT001', name: 'John Doe', amount: 5000, status: 'Completed', date: '2025-08-06', method: 'Credit Card' },
-    { id: 'PMT002', name: 'Jane Smith', amount: 7500, status: 'Pending', date: '2025-08-05', method: 'PayPal' },
-    { id: 'PMT003', name: 'Bob Johnson', amount: 3000, status: 'Failed', date: '2025-08-04', method: 'Bank Transfer' }
-];
-
 const Payment = () => {
+    const [payments, setPayments] = useState([]);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchPayments = async () => {
+            try {
+                const res = await apiClient.get("/cart/orders"); // your backend endpoint
+
+                // Map orders to payment records for frontend
+                const mappedPayments = res.data.data.orders.map(order => ({
+                    id: order.razorpayPaymentId || order._id,
+                    name: order.user?.name || "Unknown",
+                    email: order.user?.email || "N/A",
+                    amount: order.totalAmount,
+                    status: order.status,
+                    date: new Date(order.createdAt).toLocaleDateString(),
+                    method: order.items[0]?.product?.paymentMethod || "Razorpay", // fallback
+                }));
+
+                setPayments(mappedPayments);
+            } catch (err) {
+                console.error("Error fetching payments:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPayments();
+    }, []);
 
     const filteredPayments = payments.filter(payment =>
         payment.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -48,6 +72,8 @@ const Payment = () => {
             default: return null;
         }
     };
+
+    if (loading) return <div className="payment-container">Loading payments...</div>;
 
     return (
         <div className="payment-container">

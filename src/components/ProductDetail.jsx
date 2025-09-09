@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import "../styles/ProductDetail.css";
 import apiClient from "../apiClient";
 import toast from "react-hot-toast";
+import { useCart } from "../context/CartContext"; // Import the CartContext
 
 const ProductDetail = ({ product }) => {
     const [selectedImage, setSelectedImage] = useState(
         product?.images?.[0] || ""
     );
     const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const { fetchCart } = useCart(); // Get fetchCart from CartContext
 
     if (!product) return <p>No product data available</p>;
 
@@ -16,8 +18,6 @@ const ProductDetail = ({ product }) => {
         name,
         originalPrice,
         discount = 0,
-        rating = 0,
-        reviewCount = 0,
         images,
         isNew,
         inStock,
@@ -42,22 +42,26 @@ const ProductDetail = ({ product }) => {
 
             toast.success(response?.data?.message || "Added to cart!", {
                 position: "top-right",
-                autoClose: 2000,
+                autoPlay: 2000,
             });
 
             console.log("Added to cart:", response.data);
+
+            // Refresh the cart data after successful addition
+            fetchCart();
+
         } catch (error) {
             console.error("Error adding to cart:", error);
 
             if (error.response?.status === 401) {
                 toast.error("Please login to add items to cart", {
                     position: "top-right",
-                    autoClose: 3000,
+                    autoPlay: 3000,
                 });
             } else {
                 toast.error("Failed to add item to cart", {
                     position: "top-right",
-                    autoClose: 3000,
+                    autoPlay: 3000,
                 });
             }
         } finally {
