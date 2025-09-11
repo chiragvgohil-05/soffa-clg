@@ -105,17 +105,9 @@ const Navbar = () => {
                     {isMobile && (
                         <>
                             <li className="mobile-search">
-                                <form onSubmit={handleSearch}>
-                                    <input
-                                        type="text"
-                                        placeholder="Search products..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
                                     <button type="submit">
                                         <FaSearch />
                                     </button>
-                                </form>
                             </li>
                             <li className="mobile-only-icons">
                                 {user ? (
@@ -149,6 +141,9 @@ const Navbar = () => {
                                         <span className="cart-count">{cart?.items?.length}</span>
                                     )}
                                 </NavLink>
+                                <NavLink  className="icon-link"to="/product/search" onClick={closeMenu}>
+                                    <FaSearch />
+                                </NavLink>
                             </li>
                         </>
                     )}
@@ -157,20 +152,9 @@ const Navbar = () => {
                 {/* Desktop-only items */}
                 {!isMobile && (
                     <div className="navbar-right">
-                        <div className={`search-container ${searchOpen ? 'open' : ''}`}>
-                            <FaSearch className="user-search-icon" onClick={toggleSearch} />
-                            {searchOpen && (
-                                <form onSubmit={handleSearch}>
-                                    <input
-                                        type="text"
-                                        placeholder="Search products..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        autoFocus
-                                    />
-                                </form>
-                            )}
-                        </div>
+                        <NavLink to="product/search" className="icon-link">
+                            <FaSearch className="user-search-icon"/>
+                        </NavLink>
 
                         {user ? (
                             <div className="dropdown-wrapper" ref={dropdownRef}>
@@ -204,23 +188,6 @@ const Navbar = () => {
                     </div>
                 )}
             </nav>
-
-            {/* Mobile search bar when not in menu */}
-            {isMobile && !menuOpen && (
-                <div className="mobile-search-bar">
-                    <form onSubmit={handleSearch}>
-                        <input
-                            type="text"
-                            placeholder="Search products..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <button type="submit">
-                            <FaSearch />
-                        </button>
-                    </form>
-                </div>
-            )}
         </>
     );
 };

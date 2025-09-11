@@ -131,7 +131,6 @@ const Login = ({ onLogin }) => {
                             />
                             <span className="checkbox-text">Remember me </span>
                         </label>
-                        <NavLink to="/forgot-password" className="forgot-link">Forgot password?</NavLink>
                     </div>
 
                     <button type="submit" className="submit-btn">

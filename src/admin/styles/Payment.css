@@ -1,20 +1,27 @@
 .payment-container {
     width: 100%;
-     font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif;
     padding: 20px;
     box-sizing: border-box;
+    background: #f9fafb;
 }
 
+/* Title */
 .page-title {
     font-size: 24px;
     margin-bottom: 20px;
     color: #1f2937;
+    font-weight: 600;
 }
 
+/* Header */
 .payment-header {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
     margin-bottom: 20px;
 }
 
@@ -22,13 +29,13 @@
     display: flex;
     position: relative;
     align-items: center;
-    gap: 8px;
+    width: 100%;
+    max-width: 350px;
 }
 
 .payment-search-bar input {
     padding: 10px 35px;
     width: 100%;
-    max-width: 400px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 16px;
@@ -37,12 +44,14 @@
 .payment-search-icon {
     color: #6b7280;
     position: absolute;
-    left:  10px;
+    left: 10px;
+    font-size: 14px;
 }
 
 /* Table */
 .payment-table-container {
     overflow-x: auto;
+    margin-top: 10px;
 }
 
 .payment-table {
@@ -51,6 +60,7 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     border-collapse: collapse;
+    min-width: 800px; /* keeps columns readable on small scroll */
 }
 
 .payment-table th,
@@ -58,12 +68,14 @@
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
 }
 
 .payment-table th {
     background-color: #e5e7eb;
     font-weight: 600;
     color: #374151;
+    white-space: nowrap;
 }
 
 .payment-table tr:hover {
@@ -80,8 +92,9 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-weight: bold;
+    font-weight: 600;
     text-transform: capitalize;
+    font-size: 14px;
 }
 
 .status.completed { color: #10b981; }
@@ -92,6 +105,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    font-size: 14px;
 }
 
 /* Cards (Mobile) */
@@ -104,37 +118,89 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 16px;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
+    margin-bottom: 10px;
     border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 8px;
 }
 
 .payment-id {
     font-weight: 600;
     color: #1f2937;
+    font-size: 14px;
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
 }
 
 .no-results {
     text-align: center;
     color: #9ca3af;
     padding: 20px;
+    font-size: 15px;
+}
+
+/* Buttons */
+.payment-delete-btn {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.payment-delete-btn.mobile {
+    margin-top: 12px;
+    width: 100%;
+    justify-content: center;
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+    .page-title {
+        font-size: 20px;
+    }
+    .payment-table th, .payment-table td {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+
 @media (max-width: 768px) {
     .payment-table-container { display: none; }
     .payment-cards { display: block; }
+    .page-title {
+        font-size: 18px;
+    }
+    .payment-search-bar input {
+        font-size: 14px;
+        padding: 8px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-container {
+        padding: 12px;
+    }
+    .payment-card {
+        padding: 12px;
+    }
+    .detail-row {
+        font-size: 13px;
+    }
 }

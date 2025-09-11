@@ -7,13 +7,13 @@ import Cart from './pages/Cart';
 import Register from './pages/Register';
 import MainLayout from './MainLayout';
 import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword";
 import AdminLayout from "./admin/AdminLayout";
 import ProductPage from "./pages/ProductPage";
 import ErrorPage from "./pages/ErrorPage"; // Import the ErrorPage
 import { Toaster } from 'react-hot-toast';
 import ProfilePage from "./pages/ProfilePage";
 import { CartProvider } from "./context/CartContext";
+import SearchPage from "./components/SearchPage";
 
 function App() {
     const [auth, setAuth] = useState({
@@ -36,7 +36,6 @@ function App() {
                     {/* Public routes */}
                     <Route path="/login" element={<Login onLogin={updateAuth} />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
 
                     {/* Admin routes */}
                     <Route
@@ -62,6 +61,7 @@ function App() {
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/product/:id" element={<ProductPage />} />
+                        <Route path="/product/search" element={<SearchPage />} />
                     </Route>
 
                     <Route path="*" element={<ErrorPage />} />

@@ -8,13 +8,18 @@ import {
     FaCreditCard,
     FaPaypal,
     FaUniversity,
-    FaSearch
+    FaSearch,
+    FaTrash
 } from 'react-icons/fa';
+import Modal from '../../components/Modal';
+import toast from "react-hot-toast"; // your reusable modal
 
 const Payment = () => {
     const [payments, setPayments] = useState([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedPayment, setSelectedPayment] = useState(null);
 
     useEffect(() => {
         const fetchPayments = async () => {
@@ -23,13 +28,14 @@ const Payment = () => {
 
                 // Map orders to payment records for frontend
                 const mappedPayments = res.data.data.orders.map(order => ({
-                    id: order.razorpayPaymentId || order._id,
+                    id: order._id,
+                    paymentId: order.razorpayPaymentId || "N/A",
                     name: order.user?.name || "Unknown",
                     email: order.user?.email || "N/A",
                     amount: order.totalAmount,
                     status: order.status,
                     date: new Date(order.createdAt).toLocaleDateString(),
-                    method: order.items[0]?.product?.paymentMethod || "Razorpay", // fallback
+                    method: order.items[0]?.product?.paymentMethod || "Razorpay",
                 }));
 
                 setPayments(mappedPayments);
@@ -42,6 +48,25 @@ const Payment = () => {
 
         fetchPayments();
     }, []);
+
+    const handleDeleteClick = (payment) => {
+        setSelectedPayment(payment);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!selectedPayment) return;
+        try {
+            await apiClient.delete(`/cart/orders/${selectedPayment.id}`);
+            setPayments(prev => prev.filter(p => p.id !== selectedPayment.id));
+            toast.success("Payment record deleted successfully");
+        } catch (err) {
+            console.error("Error deleting payment:", err);
+        } finally {
+            setIsDeleteModalOpen(false);
+            setSelectedPayment(null);
+        }
+    };
 
     const filteredPayments = payments.filter(payment =>
         payment.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -100,22 +125,27 @@ const Payment = () => {
                         <th>Amount</th>
                         <th>Status</th>
                         <th>Date</th>
-                        <th>Method</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     {filteredPayments.length === 0 ? (
-                        <tr><td colSpan="6" className="no-results">No payments found</td></tr>
+                        <tr><td colSpan="7" className="no-results">No payments found</td></tr>
                     ) : (
                         filteredPayments.map(payment => (
                             <tr key={payment.id}>
-                                <td>{payment.id}</td>
+                                <td>{payment.paymentId}</td>
                                 <td>{payment.name}</td>
                                 <td className="amount">{formatAmount(payment.amount)}</td>
                                 <td>{renderStatus(payment.status)}</td>
                                 <td>{payment.date}</td>
-                                <td className="payment-method">
-                                    {renderMethodIcon(payment.method)}<span>{payment.method}</span>
+                                <td>
+                                    <button
+                                        onClick={() => handleDeleteClick(payment)}
+                                        className="payment-delete-btn"
+                                    >
+                                        <FaTrash /> Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))
@@ -132,7 +162,7 @@ const Payment = () => {
                     filteredPayments.map(payment => (
                         <div key={payment.id} className="payment-card">
                             <div className="card-header">
-                                <div className="payment-id">{payment.id}</div>
+                                <div className="payment-id">{payment.paymentId}</div>
                                 {renderStatus(payment.status)}
                             </div>
                             <div className="card-details">
@@ -141,10 +171,53 @@ const Payment = () => {
                                 <div className="detail-row"><span>Date:</span><span>{payment.date}</span></div>
                                 <div className="detail-row"><span>Method:</span><span className="payment-method">{renderMethodIcon(payment.method)} {payment.method}</span></div>
                             </div>
+                            <button
+                                onClick={() => handleDeleteClick(payment)}
+                                className="payment-delete-btn mobile"
+                            >
+                                <FaTrash /> Delete
+                            </button>
                         </div>
                     ))
                 )}
             </div>
+
+            {/* Confirmation Modal */}
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                title="Confirm Delete"
+                size="small"
+            >
+                <p>Are you sure you want to delete <strong>{selectedPayment?.name}</strong>'s order?</p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', gap: '0.5rem' }}>
+                    <button
+                        onClick={() => setIsDeleteModalOpen(false)}
+                        style={{
+                            backgroundColor: '#e5e7eb',
+                            border: 'none',
+                            padding: '10px 16px',
+                            borderRadius: '6px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleConfirmDelete}
+                        style={{
+                            backgroundColor: '#ef4444',
+                            color: 'white',
+                            border: 'none',
+                            padding: '10px 16px',
+                            borderRadius: '6px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Delete
+                    </button>
+                </div>
+            </Modal>
         </div>
     );
 };

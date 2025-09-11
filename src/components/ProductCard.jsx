@@ -93,7 +93,7 @@ const ProductCard = ({ product }) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={() => redirectProductDetail()}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', height:"fit-content" }}
         >
             <div className="product-image-container">
                 <img src={images?.[0]} alt={name} className="product-image" />

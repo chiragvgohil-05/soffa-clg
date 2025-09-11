@@ -26,7 +26,7 @@ const ProductCard = ({
 
     return (
         <>
-            <div className="product-card admin">
+            <div className="product-card admin" style={{height:"fit-content"}}>
                 {/* Image */}
                 <div className="product-image-container">
                     <img
