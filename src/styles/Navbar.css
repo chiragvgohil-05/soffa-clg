@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    padding: 1rem 5rem;
     background-color: #2c3e50;
     color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -19,10 +19,15 @@
     gap: 1.5rem;
 }
 
+.logo img{
+    height: 100%;
+    width: 100%;
+}
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
     color: #fff;
+    height: 70px;
 }
 
 .hamburger {
@@ -148,6 +153,13 @@
 }
 
 /* Mobile styles */
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 1rem 2rem;
+    }
+    
+}
 
 @media (max-width: 426px) {
 

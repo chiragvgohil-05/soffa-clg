@@ -1,12 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import '../styles/sidebar.css';
+import Logo from "../../assets/Untitled design (1).png";
 
 const Sidebar = ({ collapsed, toggleSidebar, mobileOpen, closeMobileSidebar }) => {
     return (
         <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
             <div className="sidebar-header">
-                {!collapsed && <div className="sidebar-logo">Admin Panel</div>}
+                {!collapsed && <div className="sidebar-logo">
+                    <img src={Logo} alt=""/>
+                </div>}
                 <button className="sidebar-toggle" onClick={toggleSidebar}>
                     {collapsed ? '☰' : '✕'}
                 </button>

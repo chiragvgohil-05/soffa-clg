@@ -74,7 +74,7 @@ const Cart = () => {
                 key: process.env.REACT_APP_RAZORPAY_KEY_ID,
                 amount: orderData.amount || Math.round((cart.totalPrice + (cart.totalPrice > 1000 ? 0 : 99)) * 100),
                 currency: orderData.currency || "INR",
-                name: "Your Store Name",
+                name: "Elegent Furniture",
                 description: "Order Payment",
                 image: "/logo.png",
                 order_id: orderData.id,

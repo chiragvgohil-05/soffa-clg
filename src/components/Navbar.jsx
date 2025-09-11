@@ -5,6 +5,7 @@ import '../styles/Navbar.css';
 import apiStore from "../apiClient";
 import toast from "react-hot-toast";
 import { useCart } from "../context/CartContext";
+import Logo from '../assets/Untitled design (1).png';
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -87,7 +88,9 @@ const Navbar = () => {
         <>
             <nav className="navbar">
                 <div className="navbar-left">
-                    <div className="logo">ShopEasy</div>
+                    <div className="logo">
+                        <img src={Logo} alt=""/>
+                    </div>
                     <div className="hamburger" onClick={toggleMenu}>
                         {menuOpen ? <FaTimes /> : <FaBars />}
                     </div>
