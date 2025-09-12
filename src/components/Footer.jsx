@@ -2,6 +2,7 @@
 import React from 'react';
 import '../styles/Footer.css';
 import {Link} from "react-router-dom";
+import Logo from "../assets/Untitled design (1).png";
 
 const Footer = () => {
     return (
@@ -9,7 +10,9 @@ const Footer = () => {
             <div className="main-container main">
                 <div className="footer-columns">
                     <div className="footer-col">
-                        <h4>ShopEasy</h4>
+                        <div style={{width: '175px'}}>
+                            <img src={Logo} alt="" height="100%" width="100%"/>
+                        </div>
                         <p>Bringing the best deals to your doorstep.</p>
                     </div>
 
@@ -34,7 +37,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-bottom">
-                    <p>&copy; {new Date().getFullYear()} ShopEasy. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Elegent Furniture. All rights reserved.</p>
                 </div>
             </div>
         </footer>
