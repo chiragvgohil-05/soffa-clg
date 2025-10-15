@@ -49,7 +49,6 @@ const Cart = () => {
         setProcessing(true);
 
         try {
-            // Load Razorpay script
             const isLoaded = await loadRazorpay();
             if (!isLoaded) {
                 toast.error("Failed to load payment gateway");
@@ -60,7 +59,6 @@ const Cart = () => {
             // Create order on backend
             const response = await apiClient.post("/cart/create-order");
 
-            // Extract backend response data
             const backendData = response.data.data || response.data;
             const orderData = backendData.order;
             const orderId = backendData.orderId;
@@ -69,7 +67,7 @@ const Cart = () => {
                 throw new Error("Invalid order response from server");
             }
 
-            // Razorpay checkout options
+            // Razorpay options
             const options = {
                 key: process.env.REACT_APP_RAZORPAY_KEY_ID,
                 amount: orderData.amount || Math.round((cart.totalPrice + (cart.totalPrice > 1000 ? 0 : 99)) * 100),
@@ -101,12 +99,8 @@ const Cart = () => {
                     email: "customer@example.com",
                     contact: "9999999999",
                 },
-                notes: {
-                    orderId: orderId,
-                },
-                theme: {
-                    color: "#3399cc",
-                },
+                notes: { orderId },
+                theme: { color: "#3399cc" },
                 modal: {
                     ondismiss: function () {
                         toast.error("Payment cancelled");
@@ -126,7 +120,10 @@ const Cart = () => {
         } catch (error) {
             console.error("Checkout error:", error);
 
-            if (error.response?.status === 404) {
+            // ✅ Handle profile missing error specifically
+            if (error.response?.data?.message?.includes("mobile number") || error.response?.data?.message?.includes("address")) {
+                toast.error(error.response.data.message);
+            } else if (error.response?.status === 404) {
                 toast.error("Checkout service unavailable. Please try again later.");
             } else if (error.response?.data?.message) {
                 toast.error(error.response.data.message);

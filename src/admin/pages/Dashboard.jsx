@@ -10,6 +10,8 @@ import {
 } from "react-icons/fa";
 import request from "../../apiClient";
 import "../styles/Dashboard.css";
+import Modal from "../../components/Modal";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
 
@@ -17,6 +19,12 @@ const Dashboard = () => {
     const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
     const [dashboardStats, setDashboardStats] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const openDeleteModal = (user) => {
+        setSelectedUser(user);
+        setIsDeleteModalOpen(true);
+    };
     const stats = [
         {
             title: "Total Users",
@@ -37,7 +45,22 @@ const Dashboard = () => {
             color: "#f59e0b",
         }
     ];
+    const handleConfirmDelete = async () => {
+        if (!selectedUser) return;
 
+        try {
+            await request.delete(`/auth/users/${selectedUser._id}`);
+            setUsers((prev) =>
+                prev.filter((user) => user._id !== selectedUser._id)
+            );
+            setIsDeleteModalOpen(false);
+            setSelectedUser(null);
+            toast.success("User deleted successfully."); // optionally replace with toast
+        } catch (err) {
+            console.error("Error deleting user:", err);
+            toast.error("Failed to delete user.");
+        }
+    };
     // ✅ Fetch users from backend
     useEffect(() => {
         const fetchUsers = async () => {
@@ -73,7 +96,6 @@ const Dashboard = () => {
             user.email?.toLowerCase().includes(search.toLowerCase()) ||
             user._id?.toLowerCase().includes(search.toLowerCase())
     );
-
     const renderStatus = (lastLogin) => {
         if (lastLogin) {
             return (
@@ -135,6 +157,7 @@ const Dashboard = () => {
                                     <th>Email</th>
                                     <th>Joined Date</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -152,6 +175,25 @@ const Dashboard = () => {
                                             <td>{user.email}</td>
                                             <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                                             <td>{renderStatus(user.lastLogin)}</td>
+                                            <td>
+                                                <button
+                                                    className="delete-btn"
+                                                    onClick={() => openDeleteModal(user)}
+                                                    disabled={user.role === "Admin"}
+                                                    title={user.role === "Admin" ? "Cannot delete admin" : ""}
+                                                    style={{
+                                                        padding: "6px 10px",
+                                                        backgroundColor: user.role === "Admin" ? "#ccc" : "#ef4444",
+                                                        color: user.role === "Admin" ? "#666" : "#fff",
+                                                        cursor: user.role === "Admin" ? "not-allowed" : "pointer",
+                                                        opacity: user.role === "Admin" ? 0.6 : 1,
+                                                        border: "none",
+                                                        borderRadius: "4px"
+                                                    }}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))
                                 )}
@@ -191,6 +233,31 @@ const Dashboard = () => {
                     </>
                 )}
             </div>
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                title="Confirm Delete"
+                size="small"
+            >
+                <p>
+                    Are you sure you want to delete <strong>{selectedUser?.name}</strong>?
+                </p>
+                <div className="modal-actions">
+                    <button
+                        onClick={() => setIsDeleteModalOpen(false)}
+                        className="cancel-btn"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleConfirmDelete}
+                        className="delete-btn"
+                        style={{width:"fit-content"}}
+                    >
+                        Delete
+                    </button>
+                </div>
+            </Modal>
         </>
     );
 };

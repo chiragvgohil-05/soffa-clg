@@ -23,6 +23,8 @@ const ProfilePage = () => {
                 ...prev,
                 name: res.data.data.name,
                 email: res.data.data.email,
+                mobile: res.data.data.mobile || "",
+                address: res.data.data.address || "",
                 image: res.data.data.image || null,
                 preview: res.data.data.image || "",
             }));
@@ -60,6 +62,8 @@ const ProfilePage = () => {
             const formData = new FormData();
             formData.append("name", profile.name);
             formData.append("email", profile.email);
+            formData.append("mobile", profile.mobile);
+            formData.append("address", profile.address);
             if (profile.password) formData.append("password", profile.password);
             if (profile.image instanceof File) {
                 formData.append("image", profile.image);
@@ -126,6 +130,28 @@ const ProfilePage = () => {
                                 value={profile.email}
                                 onChange={handleChange}
                             />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Mobile Number:</label>
+                            <input
+                                type="text"
+                                name="mobile"
+                                value={profile.mobile || ""}
+                                onChange={handleChange}
+                                placeholder="Enter your mobile number"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Address:</label>
+                            <textarea
+                                name="address"
+                                value={profile.address || ""}
+                                onChange={handleChange}
+                                placeholder="Enter your full address"
+                                rows="6"
+                            ></textarea>
                         </div>
 
                         {/*<div className="form-group password-field">*/}
