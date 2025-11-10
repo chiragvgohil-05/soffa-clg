@@ -14,7 +14,7 @@ const Login = ({ onLogin }) => {
     const { fetchCart } = useCart();
     const [errors, setErrors] = useState({});
     const [rememberMe, setRememberMe] = useState(false);
-    const BASE_URL = 'http://localhost:3000/api';
+    const BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate(); // ✅ hook for redirection
     const [showPassword, setShowPassword] = useState(false); // 👈 toggle state
 

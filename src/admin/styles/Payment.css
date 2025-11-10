@@ -223,7 +223,173 @@
     border-radius: 6px;
     cursor: pointer;
 }
+/* Order Timeline */
+.order-timeline {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
 
+.order-timeline h4 {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.timeline-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-event {
+    font-weight: 500;
+}
+
+.timeline-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Order Details Modal */
+.details-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.details-section:last-child {
+    border-bottom: none;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.customer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-info small {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.order-id, .order-date {
+    font-size: 0.9rem;
+}
+
+/* Status Badges */
+.status.processing {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* Delete Confirmation Info */
+.order-delete-info {
+    background: #fff3f3;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+    border-left: 4px solid #dc3545;
+}
+/* Payment specific styles */
+.payment-id {
+    font-size: 0.85rem;
+}
+
+.payment-view-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+}
+
+.payment-view-btn:hover {
+    background: #2563eb;
+}
+
+.payment-details-modal .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.payment-details-modal .info-item {
+    padding: 0.5rem 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.retry-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.retry-btn:hover {
+    background: #2563eb;
+}
+
+.loading-state {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+
+.delete-info {
+    background: #fef2f2;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+    border-left: 4px solid #ef4444;
+}
+
+@media (max-width: 768px) {
+    .payment-details-modal .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Responsive Table */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-info {
+        text-align: left;
+    }
+}
 /* Responsive */
 @media (max-width: 1024px) {
     .page-title {

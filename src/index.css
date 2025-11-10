@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
+    font-family: Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
     padding: 0;
     width: 100%;

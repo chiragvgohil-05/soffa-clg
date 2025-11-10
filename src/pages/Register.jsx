@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const Register = () => {
-    const BASE_URL = 'http://localhost:3000/api';
+    const BASE_URL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({

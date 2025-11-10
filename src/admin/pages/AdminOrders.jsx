@@ -26,25 +26,41 @@ const AdminOrders = () => {
                 const res = await apiClient.get("/admin/orders");
                 const mappedOrders = res.data.orders.map((order) => {
                     const shipping = order.shippingAddress || {};
+
+                    // Get the proper order date with fallbacks
+                    const orderDate = order.orderDate || order.paidAt || order.createdAt;
+
                     return {
                         id: order._id,
                         user: order.user?.name || "Unknown",
                         email: order.user?.email || "N/A",
-                        phone: shipping.phone || order.user?.mobile || "N/A", // fallback to user.mobile
-                        address: shipping.address || order.user?.address || "N/A", // fallback to user.address
+                        phone: shipping.phone || order.user?.mobile || "N/A",
+                        address: shipping.address || order.user?.address || "N/A",
                         city: shipping.city || "",
                         state: shipping.state || "",
                         pincode: shipping.pincode || "",
                         amount: order.totalAmount,
                         status: order.status,
-                        date: new Date(order.createdAt).toLocaleString(),
-                        orderId: order.razorpayOrderId || "N/A",
+                        date: new Date(orderDate).toLocaleString('en-IN', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }),
+                        orderDate: orderDate, // Store the raw date for modal
+                        paidAt: order.paidAt, // Store payment date
+                        createdAt: order.createdAt, // Store creation date
+                        orderId: order.razorpayOrderId || `ORD-${order._id.toString().slice(-6)}`,
                         items: order.items || [],
+                        // Store original order for detailed view
+                        originalOrder: order
                     };
                 });
                 setOrders(mappedOrders);
             } catch (error) {
                 console.error("Error fetching orders:", error);
+                toast.error("Failed to load orders");
             } finally {
                 setLoading(false);
             }
@@ -65,6 +81,7 @@ const AdminOrders = () => {
             toast.success("Order deleted successfully");
         } catch (error) {
             console.error("Error deleting order:", error);
+            toast.error("Failed to delete order");
         } finally {
             setIsDeleteModalOpen(false);
             setSelectedOrder(null);
@@ -79,7 +96,8 @@ const AdminOrders = () => {
     const filteredOrders = orders.filter(
         (order) =>
             order.user.toLowerCase().includes(search.toLowerCase()) ||
-            order.orderId.toLowerCase().includes(search.toLowerCase())
+            order.orderId.toLowerCase().includes(search.toLowerCase()) ||
+            order.email.toLowerCase().includes(search.toLowerCase())
     );
 
     const formatAmount = (amount) =>
@@ -89,35 +107,69 @@ const AdminOrders = () => {
             minimumFractionDigits: 0,
         }).format(amount);
 
-    const renderStatus = (status) => {
-        switch (status.toLowerCase()) {
-            case "completed":
-                return (
-                    <span className="status completed">
-                        <FaCheckCircle /> Completed
-                    </span>
-                );
-            case "pending":
-                return (
-                    <span className="status pending">
-                        <FaClock /> Pending
-                    </span>
-                );
-            case "failed":
-                return (
-                    <span className="status failed">
-                        <FaExclamationCircle /> Failed
-                    </span>
-                );
-            case "cancelled":
-                return (
-                    <span className="status failed">
-                        <FaExclamationCircle /> Cancelled
-                    </span>
-                );
-            default:
-                return <span className="status">{status}</span>;
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        return new Date(dateString).toLocaleString('en-IN', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    };
+
+    const getOrderTimeline = (order) => {
+        const timeline = [];
+
+        if (order.createdAt) {
+            timeline.push({
+                event: "Order Created",
+                date: order.createdAt,
+                formattedDate: formatDate(order.createdAt)
+            });
         }
+
+        if (order.orderDate && order.orderDate !== order.createdAt) {
+            timeline.push({
+                event: "Order Placed",
+                date: order.orderDate,
+                formattedDate: formatDate(order.orderDate)
+            });
+        }
+
+        if (order.paidAt) {
+            timeline.push({
+                event: "Payment Completed",
+                date: order.paidAt,
+                formattedDate: formatDate(order.paidAt)
+            });
+        }
+
+        // Sort by date
+        return timeline.sort((a, b) => new Date(a.date) - new Date(b.date));
+    };
+
+    const renderStatus = (status) => {
+        const statusConfig = {
+            completed: { className: "completed", icon: <FaCheckCircle />, text: "Completed" },
+            processing: { className: "processing", icon: <FaClock />, text: "Processing" },
+            pending: { className: "pending", icon: <FaClock />, text: "Pending" },
+            failed: { className: "failed", icon: <FaExclamationCircle />, text: "Failed" },
+            cancelled: { className: "failed", icon: <FaExclamationCircle />, text: "Cancelled" }
+        };
+
+        const config = statusConfig[status.toLowerCase()] || {
+            className: "pending",
+            icon: <FaClock />,
+            text: status
+        };
+
+        return (
+            <span className={`status ${config.className}`}>
+                {config.icon} {config.text}
+            </span>
+        );
     };
 
     if (loading) return <div className="payment-container">Loading orders...</div>;
@@ -125,12 +177,12 @@ const AdminOrders = () => {
     return (
         <div className="payment-container">
             <div className="payment-header">
-                <h2 className="page-title">Orders</h2>
+                <h2 className="page-title">Orders ({orders.length})</h2>
                 <div className="payment-search-bar">
                     <FaSearch className="payment-search-icon" />
                     <input
                         type="text"
-                        placeholder="Search orders..."
+                        placeholder="Search by customer, order ID, or email..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -147,7 +199,7 @@ const AdminOrders = () => {
                         <th>Items</th>
                         <th>Amount</th>
                         <th>Status</th>
-                        <th>Date</th>
+                        <th>Order Date</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -161,24 +213,31 @@ const AdminOrders = () => {
                     ) : (
                         filteredOrders.map((order) => (
                             <tr key={order.id}>
-                                <td>{order.orderId}</td>
-                                <td>{order.user}</td>
+                                <td className="order-id">{order.orderId}</td>
+                                <td>
+                                    <div className="customer-info">
+                                        <strong>{order.user}</strong>
+                                        <small>{order.email}</small>
+                                    </div>
+                                </td>
                                 <td>{order.items.length}</td>
                                 <td className="amount">
                                     {formatAmount(order.amount)}
                                 </td>
                                 <td>{renderStatus(order.status)}</td>
-                                <td>{order.date}</td>
+                                <td className="order-date">{order.date}</td>
                                 <td style={{display:"flex", gap:"0.5rem"}}>
                                     <button
                                         onClick={() => handleViewClick(order)}
                                         className="payment-view-btn"
+                                        title="View Details"
                                     >
                                         <FaEye /> View
                                     </button>
                                     <button
                                         onClick={() => handleDeleteClick(order)}
                                         className="payment-delete-btn"
+                                        title="Delete Order"
                                     >
                                         <FaTrash /> Delete
                                     </button>
@@ -207,6 +266,10 @@ const AdminOrders = () => {
                                     <span>{order.user}</span>
                                 </div>
                                 <div className="detail-row">
+                                    <span>Email:</span>
+                                    <span>{order.email}</span>
+                                </div>
+                                <div className="detail-row">
                                     <span>Items:</span>
                                     <span>{order.items.length}</span>
                                 </div>
@@ -217,7 +280,7 @@ const AdminOrders = () => {
                                     </span>
                                 </div>
                                 <div className="detail-row">
-                                    <span>Date:</span>
+                                    <span>Order Date:</span>
                                     <span>{order.date}</span>
                                 </div>
                             </div>
@@ -244,48 +307,93 @@ const AdminOrders = () => {
             <Modal
                 isOpen={isViewModalOpen}
                 onClose={() => setIsViewModalOpen(false)}
-                title="Order Details"
+                title={`Order Details - ${selectedOrder?.orderId}`}
                 size="large"
             >
                 {selectedOrder ? (
                     <div className="order-details-modal">
-                        <h3>Customer Information</h3>
-                        <p><strong>Name:</strong> {selectedOrder.user}</p>
-                        <p><strong>Email:</strong> {selectedOrder.email}</p>
-                        <p><strong>Phone:</strong> {selectedOrder.phone}</p>
-                        <p>
-                            <strong>Address:</strong> {selectedOrder.address}
-                        </p>
-
-
-                        <hr style={{ margin: "1rem 0" }} />
-
-                        <h3>Products</h3>
-                        <table className="product-table">
-                            <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Subtotal</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {selectedOrder.items.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{item.product?.name || "Product"}</td>
-                                    <td>{item.quantity}</td>
-                                    <td>{formatAmount(item.price)}</td>
-                                    <td>{formatAmount(item.quantity * item.price)}</td>
-                                </tr>
+                        <div className="order-timeline">
+                            <h4>Order Timeline</h4>
+                            {getOrderTimeline(selectedOrder).map((timelineItem, index) => (
+                                <div key={index} className="timeline-item">
+                                    <span className="timeline-event">{timelineItem.event}:</span>
+                                    <span className="timeline-date">{timelineItem.formattedDate}</span>
+                                </div>
                             ))}
-                            </tbody>
-                        </table>
+                        </div>
 
-                        <hr style={{ margin: "1rem 0" }} />
-                        <p><strong>Total Amount:</strong> {formatAmount(selectedOrder.amount)}</p>
-                        <p><strong>Status:</strong> {selectedOrder.status}</p>
-                        <p><strong>Order Date:</strong> {selectedOrder.date}</p>
+                        <div className="details-section">
+                            <h3>Customer Information</h3>
+                            <div className="info-grid">
+                                <div className="info-item">
+                                    <strong>Name:</strong> {selectedOrder.user}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Email:</strong> {selectedOrder.email}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Phone:</strong> {selectedOrder.phone}
+                                </div>
+                                <div className="info-item full-width">
+                                    <strong>Address:</strong> {selectedOrder.address}
+                                    {selectedOrder.city && `, ${selectedOrder.city}`}
+                                    {selectedOrder.state && `, ${selectedOrder.state}`}
+                                    {selectedOrder.pincode && ` - ${selectedOrder.pincode}`}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="details-section">
+                            <h3>Order Items</h3>
+                            <table className="product-table">
+                                <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {selectedOrder.items.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.product?.name || "Product Name Not Available"}</td>
+                                        <td>{item.quantity}</td>
+                                        <td>{formatAmount(item.price)}</td>
+                                        <td>{formatAmount(item.quantity * item.price)}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colSpan="3" style={{textAlign: 'right', fontWeight: 'bold'}}>Total Amount:</td>
+                                    <td style={{fontWeight: 'bold'}}>{formatAmount(selectedOrder.amount)}</td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <div className="details-section">
+                            <h3>Order Summary</h3>
+                            <div className="info-grid">
+                                <div className="info-item">
+                                    <strong>Order Status:</strong>
+                                    {renderStatus(selectedOrder.status)}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Order ID:</strong> {selectedOrder.orderId}
+                                </div>
+                                <div className="info-item">
+                                    <strong>Payment Status:</strong>
+                                    {selectedOrder.paidAt ? "Paid" : "Pending"}
+                                </div>
+                                {selectedOrder.paidAt && (
+                                    <div className="info-item">
+                                        <strong>Paid At:</strong> {formatDate(selectedOrder.paidAt)}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 ) : (
                     <p>No order selected</p>
@@ -300,9 +408,13 @@ const AdminOrders = () => {
                 size="small"
             >
                 <p>
-                    Are you sure you want to delete{" "}
-                    <strong>{selectedOrder?.user}</strong>'s order?
+                    Are you sure you want to delete the order from{" "}
+                    <strong>{selectedOrder?.user}</strong>?
                 </p>
+                <div className="order-delete-info">
+                    <p><strong>Order ID:</strong> {selectedOrder?.orderId}</p>
+                    <p><strong>Amount:</strong> {selectedOrder && formatAmount(selectedOrder.amount)}</p>
+                </div>
                 <div className="modal-actions">
                     <button
                         onClick={() => setIsDeleteModalOpen(false)}
@@ -314,7 +426,7 @@ const AdminOrders = () => {
                         onClick={handleConfirmDelete}
                         className="delete-btn"
                     >
-                        Delete
+                        Delete Order
                     </button>
                 </div>
             </Modal>

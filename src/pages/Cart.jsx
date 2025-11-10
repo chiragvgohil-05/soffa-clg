@@ -78,23 +78,29 @@ const Cart = () => {
                 order_id: orderData.id,
                 handler: async function (response) {
                     try {
-                        await apiClient.post("/cart/verify-payment", {
+                        const verifyResponse = await apiClient.post("/cart/verify-payment", {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
                             orderId: orderId,
                         });
 
-                        toast.success("Payment successful! Order placed.");
+                        const orderData = verifyResponse.data.data.order;
+                        const orderDate = orderData.paidAt || orderData.orderDate || new Date().toISOString();
+
+                        toast.success(`Payment successful! Order placed on ${new Date(orderDate).toLocaleDateString()}`);
                         fetchCart();
                         setProcessing(false);
+
+                        // Optional: Redirect to order confirmation page
+                        // navigate(`/order-confirmation/${orderData._id}`);
+
                     } catch (error) {
                         console.error("Payment verification failed:", error);
                         toast.error(error.response?.data?.message || "Payment verification failed");
                         setProcessing(false);
                     }
-                },
-                prefill: {
+                },                prefill: {
                     name: "Customer",
                     email: "customer@example.com",
                     contact: "9999999999",
