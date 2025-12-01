@@ -88,6 +88,44 @@
 .products-grid-container::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
 }
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 25px 0;
+    gap: 15px;
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    border: none;
+    background: #2a7ae4;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.pagination-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    font-size: 16px;
+}
+.search-input {
+    padding: 10px 14px;
+    border: 1px solid #d4d4d4;
+    border-radius: 8px;
+    font-size: 15px;
+    width: 250px;
+    outline: none;
+    margin-right: 15px;
+}
+.search-input:focus {
+    border-color: #4a90e2;
+}
+
 
 /* Responsive styles */
 @media (max-width: 1024px) {

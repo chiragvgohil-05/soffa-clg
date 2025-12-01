@@ -261,7 +261,13 @@ const ProductEdit = () => {
                                             <Select
                                                 label="Category"
                                                 name="category"
-                                                options={['soffa', 'chair']}
+                                                options={[
+                                                    'Living Room',
+                                                    'Bedroom',
+                                                    'Dining & Kitchen',
+                                                    'Office Furniture',
+                                                    'Outdoor & Garden'
+                                                ]}
                                                 value={formData.category}
                                                 onChange={(e) => handleChange({ target: { name: 'category', value: e.target.value } })}
                                                 placeholder="Select Category"

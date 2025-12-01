@@ -26,7 +26,7 @@ function Home() {
         const fetchProducts = async () => {
             try {
                 const res = await apiClient.get("/products");
-                setProducts(res.data.data); // assuming backend sends { data: [...] }
+                setProducts(res.data.data.data); // assuming backend sends { data: [...] }
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching products:", err);
@@ -232,28 +232,7 @@ function Home() {
                     ))}
                 </div>
             </div>
-
-            {/* ✅ Follow Us */}
-            <div className="container">
-                <SectionHeading
-                    title="Follow Us"
-                    leftIcon={demo}
-                    rightIcon={demo}
-                    color="#caa636"
-                />
-                <div>
-                    <div className="category-container" style={{ marginTop: "0" }}>
-                        {followUsLinks.map((cat, index) => (
-                            <CategoryCard
-                                key={index}
-                                name={cat.name}
-                                image={cat.image}
-                                url={cat.url}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <br/>
         </div>
     );
 }

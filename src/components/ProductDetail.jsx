@@ -126,8 +126,6 @@ const ProductDetail = ({ product }) => {
                             ? "Add to Cart"
                             : "Unavailable"}
                 </button>
-
-                <button className="pdp_checkout_btn">Check Out</button>
             </div>
         </div>
     );
