@@ -25,8 +25,8 @@ const Shop = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await apiClient.get("/products");
-                setProducts(res.data.data); // assuming backend sends { data: [...] }
+                const res = await apiClient.get("/products?page=1&limit=0");
+                setProducts(res.data.data.data); // assuming backend sends { data: [...] }
                 setLoading(false);
             } catch (err) {
                 console.error("Error fetching products:", err);
